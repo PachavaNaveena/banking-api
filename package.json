@@ -1,0 +1,22 @@
+{
+  "name": "bankingwithtxtdb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PachavaNaveena/bankingwithtxtdb.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PachavaNaveena/bankingwithtxtdb/issues"
+  },
+  "homepage": "https://github.com/PachavaNaveena/bankingwithtxtdb#readme",
+  "dependencies": {
+    "fs": "^0.0.1-security"
+  }
+}
