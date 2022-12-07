@@ -8,7 +8,6 @@ function deposit(accountNumber, amount) {
     }
     user.balance = user.balance + amount
     if (userOperations.updateUser(accountNumber, user)) {
-
         console.log("Successfully deposited");
         return true;
     } else {
@@ -16,7 +15,8 @@ function deposit(accountNumber, amount) {
         return false;
     }
 }
-function transfer(accountNumber, fromAccountNumber, amount) {
+function transfer(toAccountNumber, fromAccountNumber, amount) {
+
 
 }
 

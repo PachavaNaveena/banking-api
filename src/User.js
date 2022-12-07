@@ -33,16 +33,33 @@ function getUser(accountNumber) {
 }
 
 function getUsers() {
-
+    let users = fileOperations.readFromFile(fileName)
+    if(users.length != 0) {
+        for (let i = 0; i < users.length; i++) {
+            console.log(users[i].firstName +" "+ users[i].lastName)
+        }
+        return true
+    } else{
+        console.log("zero users");
+        return false
+    }
 }
 
-function searchUser(name) {
-
+function searchUser(Name) {
+     let users = fileOperations.readFromFile(fileName)
+     for(let i=0; i<users.length;i++){
+         if(users[i].firstName.toLowerCase() == Name.toLowerCase() || users[i].lastName.toLowerCase() == Name.toLowerCase()) {
+             return users[i]
+         }
+    }
+    console.log("Name not found")
+    return false
 }
 
 module.exports = {
     addUser: addUser,
     updateUser: updateUser,
     getUser: getUser,
-    searchUser: searchUser
+    searchUser: searchUser,
+    getUsers: getUsers
 }
