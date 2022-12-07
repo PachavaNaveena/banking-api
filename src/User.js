@@ -46,14 +46,14 @@ function getUsers() {
 }
 
 function searchUser(Name) {
+    let serachResult=[]
      let users = fileOperations.readFromFile(fileName)
-     for(let i=0; i<users.length;i++){
-         if(users[i].firstName.toLowerCase() == Name.toLowerCase() || users[i].lastName.toLowerCase() == Name.toLowerCase()) {
-             return users[i]
+     for(let i=0; i<users.length;i++) {
+         if (users[i].firstName.toLowerCase() === Name.toLowerCase() || users[i].lastName.toLowerCase() === Name.toLowerCase()) {
+             serachResult.push(users[i])
          }
-    }
-    console.log("Name not found")
-    return false
+     }
+    return searchResult
 }
 
 module.exports = {

@@ -15,17 +15,43 @@ function deposit(accountNumber, amount) {
         return false;
     }
 }
-function transfer(toAccountNumber, fromAccountNumber, amount) {
 
 
+function transfer(fromAccountNumber, toAccountNumber, amount) {
+    let fromUser = userOperations.getUser(fromAccountNumber)
+    let toUser = userOperations.getUser(toAccountNumber)
+
+    if(!fromUser){
+        console.log("invalied account no")
+        return false }
+    else if(!toUser){
+        console.log("recepient dosent exist")
+        return false }
+
+    if(fromUser.balance < amount){
+        console.log("insufficient balance " + fromUser.balance)
+        return false
+    }
+
+    fromUser.balance = fromUser.balance - amount
+    toUser.balance = toUser.balance + amount
+
+    let accountNumber = [fromAccountNumber, toAccountNumber]
+    let user = [fromUser, toUser]
+    for (let i = 0; i < accountNumber.length; i++) {
+        userOperations.updateUser(accountNumber[i], user[i])
+    }
+    console.log("amount "+amount+" successfully debeted from " + fromUser.firstName + " and credited to " + toUser.firstName)
+    return true
 }
 
-function withdraw(accountNumber, amount) {
 
+function withdraw(accountNumber, amount) {
+//
 }
 
 function readTransactions(accountNumber) {
-
+// read transactions of a particular account number
 }
 
 module.exports = {
