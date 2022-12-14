@@ -41,16 +41,28 @@ function transfer(fromAccountNumber, toAccountNumber, amount) {
     for (let i = 0; i < accountNumber.length; i++) {
         userOperations.updateUser(accountNumber[i], user[i])
     }
-    console.log("amount "+amount+" successfully debeted from " + fromUser.firstName + " and credited to " + toUser.firstName)
+    console.log("amount "+amount+" successfully debted from " + fromUser.firstName + " and credited to " + toUser.firstName)
     return true
 }
 
 
 function withdraw(accountNumber, amount) {
-//
+    let user = userOperations.getUser(accountNumber)
+
+    if (!user)
+        console.log("invalid account number")
+        else if(user.balance < amount)
+            console.log("insufficient balance")
+    else {
+        user.balance = user.balance - amount
+        userOperations.updateUser(accountNumber,user)
+        console.log("Balance Amount :"+ user.balance +" ,withdraw amount :"+ amount)
+    }
 }
 
+
 function readTransactions(accountNumber) {
+
 // read transactions of a particular account number
 }
 

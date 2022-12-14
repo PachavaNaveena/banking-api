@@ -35,5 +35,8 @@ userOperations.addUser({
 //console.log(deposit)
 
 //------transaction
-let transfer = transaction.transfer("9ac37059-1aa6-48ce-81b8-40d9a117fd57","93c770f3-af01-40e7-b148-238a1f7be005",100)
-console.log(transfer)
+// let transfer = transaction.transfer("9ac37059-1aa6-48ce-81b8-40d9a117fd57","93c770f3-af01-40e7-b148-238a1f7be005",50)
+// console.log(transfer)
+
+//______withdraw
+let withdraw = transaction.withdraw("93c770f3-af01-40e7-b148-238a1f7be005", 50)
