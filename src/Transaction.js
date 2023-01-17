@@ -1,5 +1,7 @@
 const userOperations = require('./User')
-const fileName = "transactions"
+const fileOperations = require("./db");
+const {v4} = require("uuid");
+const fileName = "t"
 function deposit(accountNumber, amount) {
     let user = userOperations.getUser(accountNumber)
     if (!user) {
@@ -49,25 +51,48 @@ function transfer(fromAccountNumber, toAccountNumber, amount) {
 function withdraw(accountNumber, amount) {
     let user = userOperations.getUser(accountNumber)
 
-    if (!user)
+    if (!user){
         console.log("invalid account number")
-        else if(user.balance < amount)
-            console.log("insufficient balance")
-    else {
+    } else if(user.balance < amount) {
+        console.log("insufficient balance")
+    } else {
         user.balance = user.balance - amount
-        userOperations.updateUser(accountNumber,user)
+        userOperations.updateUser(accountNumber, user)
+        transfer(accountNumber, "", amount, "withdraw")
         console.log("Balance Amount :"+ user.balance +" ,withdraw amount :"+ amount)
     }
 }
 
 
 function readTransactions(accountNumber) {
+    let transactions = fileOperations.readFromFile(fileName)
+    return transactions.filter(function(transaction) {
+        return transaction.fromAccount === accountNumber || transaction.toAccount === accountNumber
+    })
+}
 
-// read transactions of a particular account number
+
+
+
+function transfer (fromAccount, toAccount, amount, type) {
+    let transactions = fileOperations.readFromFile(fileName)
+    const transaction = {
+        fromAccount: fromAccount,
+        toAccount: toAccount,
+        amount,
+        type
+    }
+    if (transactions) {
+        transactions.push(transaction)
+    } else {
+        transactions = [transaction]
+    }
+    fileOperations.writeToFile(fileName,  transactions)
 }
 
 module.exports = {
     deposit,
     transfer,
-    withdraw
+    withdraw,
+    readTransactions
 }
