@@ -43,11 +43,11 @@ function getUsers() {
 }
 
 function searchUser(Name) {
-    let serachResult=[]
+    let searchResult=[]
      let users = fileOperations.readFromFile(fileName)
      for(let i=0; i<users.length;i++) {
          if (users[i].firstName.toLowerCase() === Name.toLowerCase() || users[i].lastName.toLowerCase() === Name.toLowerCase()) {
-             serachResult.push(users[i])
+             searchResult.push(users[i])
          }
      }
     return searchResult

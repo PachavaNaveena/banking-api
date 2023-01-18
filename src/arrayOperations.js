@@ -12,7 +12,7 @@ function isSenior(user, index){
     return user
 }
 
-const addAge = (user, index) => {
+const caddAge = (user, index) => {
     user.age = Math.floor((Math.random() * 100));
     return user
 }

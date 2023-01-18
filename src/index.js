@@ -1,44 +1,49 @@
-const userOperations = require('./User')
-const transaction = require('./Transaction')
-const {v4} = require("uuid");
-const {getUser} = require("./User");
+const express = require('express')
+const bodyParser = require('body-parser')
+const userOps = require('./User')
 
- // userOperations.addUser({
- //     firstName: "Gowtham",
- //     lastName: "pachava",
- //     accountNumber: v4(),
- //     balance: 0,
- //     address: "housing board colony",
- //     city: "ongole",
- //     state: "AP"
- // });
-
-//-----------updateUser
-//let user = userOperations.getUser("93c770f3-af01-40e7-b148-238a1f7be005")
-//console.log(user)
-//user.firstName = "bhavana"
-//userOperations.updateUser("93c770f3-af01-40e7-b148-238a1f7be005",user)
-
- //--------- getUser
-// let user = userOperations.getUser("93c770f3-af01-40e7-b148-238a1f7be005")
-// console.log(user.firstName)
+const app = express()
 
 
-//----------- searchUser
-//let user1 = userOperations.searchUser("chaitanya")
-//console.log(user1)
+app.use(bodyParser.json({limit: '2mb', type: '*/json'}))
 
-//userOperations.getUsers();
+app.get('/users', function(req, res, next){
+ const users = userOps.getUsers();
+ res.send(users)
+})
 
-//---------deposit
-// let deposit = transaction.deposit("93c770f3-af01-40e7-b148-238a1f7be005", 500);
-// console.log(deposit)
+app.get('/users/name/:name', function(req, res, next){
+ const name = req.params.name
+ const size = req.query.size
+ const users = userOps.searchUser(name)
+ res.json(users)
+})
 
-//------transaction
-// let transfer = transaction.transfer("9ac37059-1aa6-48ce-81b8-40d9a117fd57","93c770f3-af01-40e7-b148-238a1f7be005",50)
-// console.log(transfer)
+app.post('/users', function(req, res, next) {
+ const body = req.body
+ const requiredFields = ["firstName", "lastName"]
+ const fields = Object.keys(body)
 
-//______withdraw
-//  let withdraw = transaction.withdraw("93c770f3-af01-40e7-b148-238a1f7be005", 10)
- let transactions = transaction.readTransactions("987a223f-c492-435f-83c5-47e1d23cd023")
-console.log(transactions);
+ const missing = []
+ requiredFields.forEach((value) =>{
+  if (fields.indexOf(value) === -1) {
+   missing.push(value)
+  }
+ })
+
+ if (missing.length > 0) {
+  res.status(400).json(
+      {
+       message: "Missing required field " + missing.join(", "),
+       message1: `Missing required field ${missing.join(", ")}`
+      }
+  )
+ } else {
+  userOps.addUser(body)
+  res.json(body)
+ }
+})
+
+app.listen(6000, function() {
+ console.log("App running on http://localhost:6000")
+})
