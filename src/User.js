@@ -35,10 +35,7 @@ function getUser(accountNumber) {
 function getUsers() {
     let users = fileOperations.readFromFile(fileName)
     if(users.length != 0) {
-        for (let i = 0; i < users.length; i++) {
-            console.log(users[i].firstName +" "+ users[i].lastName)
-        }
-        return true
+        return users
     } else{
         console.log("zero users");
         return false
