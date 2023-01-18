@@ -3,7 +3,7 @@ function isSenior(user, index){
     return user.ageCategory === 'senior'
 }
 
-function addAgeCategory(user, index) {
+ const addAgeCategory =(user, index) =>{
     if (user.age > 60) {
         user.ageCategory = 'senior'
     } else {
@@ -11,7 +11,8 @@ function addAgeCategory(user, index) {
     }
     return user
 }
-function addAge (user, index) {
+
+const addAge = (user, index) => {
     user.age = Math.floor((Math.random() * 100));
     return user
 }
@@ -19,7 +20,7 @@ function addAge (user, index) {
 let users = userOperations.getUsers()
 users = users.map(addAge).map(addAgeCategory).filter(isSenior)
 
-const user = users.find(function(user, index) {
+const user = users.find((user, index) => {
     return user.age > 60
 })
 
