@@ -10,6 +10,7 @@ function deposit(accountNumber, amount) {
     }
     user.balance = user.balance + amount
     if (userOperations.updateUser(accountNumber, user)) {
+        transferData(accountNumber,"",amount,"deposit")
         console.log("Successfully deposited");
         return true;
     } else {
@@ -43,6 +44,7 @@ function transfer(fromAccountNumber, toAccountNumber, amount) {
     for (let i = 0; i < accountNumber.length; i++) {
         userOperations.updateUser(accountNumber[i], user[i])
     }
+    transferData(fromAccountNumber,toAccountNumber,amount,"Transfer")
     console.log("amount "+amount+" successfully debted from " + fromUser.firstName + " and credited to " + toUser.firstName)
     return true
 }
@@ -58,27 +60,25 @@ function withdraw(accountNumber, amount) {
     } else {
         user.balance = user.balance - amount
         userOperations.updateUser(accountNumber, user)
-        transfer(accountNumber, "", amount, "withdraw")
+        transferData(accountNumber, "", amount, "withdraw")
         console.log("Balance Amount :"+ user.balance +" ,withdraw amount :"+ amount)
     }
 }
 
-
 function readTransactions(accountNumber) {
     let transactions = fileOperations.readFromFile(fileName)
-    return transactions.filter(function(transaction) {
-        return transaction.fromAccount === accountNumber || transaction.toAccount === accountNumber
+    return transactions.filter(function(x) {
+        return x.fromAccount === accountNumber || x.toAccount === accountNumber
     })
 }
 
 
-
-
-function transfer (fromAccount, toAccount, amount, type) {
+//add transaction data to t.json file
+function transferData (fromAccount, toAccount, amount, type) {
     let transactions = fileOperations.readFromFile(fileName)
     const transaction = {
-        fromAccount: fromAccount,
-        toAccount: toAccount,
+        fromAccount,
+        toAccount,
         amount,
         type
     }
@@ -87,7 +87,7 @@ function transfer (fromAccount, toAccount, amount, type) {
     } else {
         transactions = [transaction]
     }
-    fileOperations.writeToFile(fileName,  transactions)
+    fileOperations.writeToFile(fileName, transactions)
 }
 
 module.exports = {

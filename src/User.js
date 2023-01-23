@@ -29,7 +29,7 @@ function getUser(accountNumber) {
             return users[i]
         }
     }
-    return null
+    return console.log("dosent exist with" + accountNumber)
 }
 
 function getUsers() {
@@ -46,7 +46,7 @@ function searchUser(Name) {
     let searchResult=[]
      let users = fileOperations.readFromFile(fileName)
      for(let i=0; i<users.length;i++) {
-         if (users[i].firstName.toLowerCase() === Name.toLowerCase() || users[i].lastName.toLowerCase() === Name.toLowerCase()) {
+         if ( users[i].firstName.toLowerCase() === Name.toLowerCase()  || users[i].firstName.toLowerCase() === Name.toLowerCase()) {
              searchResult.push(users[i])
          }
      }
