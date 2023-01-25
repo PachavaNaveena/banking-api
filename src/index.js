@@ -182,40 +182,7 @@ app.get('/transactions/allTransactions/accountNumber/:accountNumber',function (r
   res.send(transactionList)
 })
 
-//-----------------search users
-// app.get('/users/name/:name', function(req, res, next){
-//  const name = req.params.name
-//  const size = req.query.size
-//  const users = userOps.searchUser(name)
-//  res.json(users)
-// })
 
-//----------------------add users
-// app.post('/users', function(req, res, next) {
-//  const body = req.body
-//  const requiredFields = ["firstName", "lastName","accountNumber","balance","address","city","state"]
-//  const fields = Object.keys(body)
-//
-//  const missing = []
-//  requiredFields.forEach((value) =>{
-//   if (fields.indexOf(value) === -1) {
-//    missing.push(value)
-//   }
-//  })
-//
-//  if (missing.length > 0) {
-//   res.status(400).json(
-//       {
-//       message: "Missing required field " + missing.join(", "),
-//
-//       }
-//   )
-//  } else {
-//   userOps.addUser(body)
-//   res.json(body)
-//  }
-// })
-//
 app.listen(6000, function() {
  console.log("App running on http://localhost:6000")
 })
