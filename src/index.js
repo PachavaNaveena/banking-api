@@ -1,7 +1,7 @@
-const userOperations = require('./User')
-const transaction = require('./Transaction')
-const {v4} = require("uuid");
-const {getUser} = require("./User");
+// const userOperations = require('./User')
+// const transaction = require('./Transaction')
+// const {v4} = require("uuid");
+// const {getUser} = require("./User");
 
 //--------------- USER OPERATIONS -----------------------------------------------------
 
@@ -114,6 +114,16 @@ app.post('/users/addUser',function (req,res,next){
 app.put("/users/updateUser/accountNumber/:accountNumber",function (req,res,next){
  const accountNumber = req.params.accountNumber
  const body = req.body
+ //const user = userOps.getUser(accountNumber)
+ const givenFields = object.keys(body)
+ const requiredFields = ["firstName","lastName","accountNumber","balance","address","city","state"]
+ const givenValues = object.valueOf(body)
+ for(let i=0; i<givenFields.length; i++){
+  for(let j=0; j<requiredFields.length; j++){
+   if(givenFields[i]==requiredFields[i])
+
+  }
+ }
  const user = userOps.updateUser(accountNumber,body)
  res.send(user)
 })
@@ -180,7 +190,7 @@ app.get('/transactions/allTransactions/accountNumber/:accountNumber',function (r
   res.send({message: "no transactions registred with account number :"+accountNumber})
  else
   res.send(transactionList)
-})
+});
 
 
 app.listen(6000, function() {
