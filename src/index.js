@@ -110,21 +110,21 @@ app.post('/users/addUser',function (req,res,next){
 })
 
 
-//---------UPDATE USERS----------
+//---------UPDATE USERS----------//
 app.put("/users/updateUser/accountNumber/:accountNumber",function (req,res,next){
  const accountNumber = req.params.accountNumber
  const body = req.body
- //const user = userOps.getUser(accountNumber)
- const givenFields = object.keys(body)
- const requiredFields = ["firstName","lastName","accountNumber","balance","address","city","state"]
- const givenValues = object.valueOf(body)
- for(let i=0; i<givenFields.length; i++){
-  for(let j=0; j<requiredFields.length; j++){
-   if(givenFields[i]==requiredFields[i])
+ let user = userOps.getUser(accountNumber)
+ const givenFields = Object.keys(body)
+ const requiredFields = ["firstName","lastName","address","city","state"]
 
+ for (let i=0; i<givenFields.length; i++) {
+  const field = givenFields[i]
+  if (requiredFields.indexOf(field) > -1) {
+   user[field] = body[field]
   }
  }
- const user = userOps.updateUser(accountNumber,body)
+ user = userOps.updateUser(accountNumber,user)
  res.send(user)
 })
 
