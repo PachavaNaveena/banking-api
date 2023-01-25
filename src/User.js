@@ -2,6 +2,15 @@ const fileOperations = require('./db')
 const fileName = "users"
 function addUser(user) {
     let users = fileOperations.readFromFile(fileName)
+
+    // return users.find(function (x){
+    //      return x.accountNumber = user.accountNumber
+    //     })
+    // for (let i=0; i<users.length;i++) {
+    //     if (users[i].accountNumber === user.accountNumber)
+    //         return false
+    // }
+
     if (users) {
         users.push(user)
     } else {
@@ -29,14 +38,16 @@ function getUser(accountNumber) {
             return users[i]
         }
     }
-    return console.log("dosent exist with" + accountNumber)
+    console.log("dosent exist with" + accountNumber)
+    return false
 }
 
 function getUsers() {
     let users = fileOperations.readFromFile(fileName)
     if(users.length != 0) {
         return users
-    } else{
+    }
+    else{
         console.log("zero users");
         return false
     }
@@ -46,11 +57,12 @@ function searchUser(Name) {
     let searchResult=[]
      let users = fileOperations.readFromFile(fileName)
      for(let i=0; i<users.length;i++) {
-         if ( users[i].firstName.toLowerCase() === Name.toLowerCase()  || users[i].firstName.toLowerCase() === Name.toLowerCase()) {
+         if ( users[i].firstName.toLowerCase() === Name.toLowerCase()  || users[i].lastName.toLowerCase() === Name.toLowerCase())
+         {
              searchResult.push(users[i])
          }
      }
-    return searchResult
+     return searchResult
 }
 
 module.exports = {

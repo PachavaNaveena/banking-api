@@ -1,11 +1,11 @@
-// const userOperations = require('./User')
-// const transaction = require('./Transaction')
-// const {v4} = require("uuid");
-// const {getUser} = require("./User");
+const userOperations = require('./User')
+const transaction = require('./Transaction')
+const {v4} = require("uuid");
+const {getUser} = require("./User");
 
 //--------------- USER OPERATIONS -----------------------------------------------------
 
-// ----------ADD USER------
+//----------ADD USER------
 // userOperations.addUser({
 //  firstName: "abhi",
 //  lastName: "verapaneni",
@@ -51,25 +51,41 @@
 // let readTransactions = transaction.readTransactions("19b2393a-cb4d-4a93-8bf7-11be36ed2a5d")
 // console.log(readTransactions)
 
-//----------------------------------------------------------------------------------------------------------------------
-//----POSTMAN---
+//---------------------------------------------------POSTMAN------------------------------------------------------------
+
 const express = require('express')
 const bodyParser = require('body-parser')
 const userOps = require('./User')
 const transactionOps = require('./Transaction')
+const {static, response} = require("express");
 
 const app = express()
 
 app.use(bodyParser.json({limit: '2mb', type: '*/json'}))
 
 //-----------GET USERS-----------
-app.get('/users', function(req, res, next){
- const users = userOps.getUsers();
- res.send(users) // we can use res.json(users)
+app.get('/users/getUsers', function(req, res, next){
+ const x = userOps.getUsers();
+ if(x == null)
+  res.send({message: "empty users list"})
+ else
+  res.send(x) // we can use res.json(users)
 })
 
+
+//-----------GET USER------------
+app.get("/users/getUser/accountNumber/:accountNumber", function (req,res,next){
+ const accountNumber = req.params.accountNumber
+ const users = userOps.getUser(accountNumber)
+ if(users==null)
+  res.status(400).send({message: "User with account number "+ accountNumber + " dosent exist"})
+ else
+  res.send(users)
+})
+
+
 //-----------ADD USERS------------
-app.post('/users',function (req,res,next){
+app.post('/users/addUser',function (req,res,next){
  const body = req.body
  const requiredFields = ["firstName","lastName","accountNumber","balance","address","city","state"]
  const givenFields = Object.keys(body)
@@ -83,27 +99,19 @@ app.post('/users',function (req,res,next){
 
  if(missing.length>0){
   res.status(400).send({message : "missing required fields are : " + missing.join(",")})
- }
- // else if (userOps.getUser(givenFields.values(accountNumber)) == true){
- //  res.status(400).send({message : "user alredy exist with same accountNumber :" + accountNumber})
- // }
- else {
-  const user = userOps.addUser(body)
+ } else {
+  userOps.addUser(body)
   res.send(body)
+     // if(false)
+     //  res.status(400).send({message : "user alredy exist with same accountNUmber"})
+     // else
+     //  res.send(body)
  }
-})
-
-
-//--------GET USER-------------
-app.get("/users/accountNumber/:accountNumber", function (req,res,next){
- const accountNumber = req.params.accountNumber
- const user = userOps.getUser(accountNumber)
- res.send(user)
 })
 
 
 //---------UPDATE USERS----------
-app.put("/users/accountNumber/:accountNumber",function (req,res,next){
+app.put("/users/updateUser/accountNumber/:accountNumber",function (req,res,next){
  const accountNumber = req.params.accountNumber
  const body = req.body
  const user = userOps.updateUser(accountNumber,body)
@@ -111,11 +119,68 @@ app.put("/users/accountNumber/:accountNumber",function (req,res,next){
 })
 
 
-//--- READ TRANSACTIONS -------- was not executed
-// app.get('/transactions',function (req,res,next){
-//  const transactions = transactionOps.readTransactions();
-//  res.send(transactions)
-// })
+//------- SEARCH USER-------------
+app.get('/users/searchUser/name/:name',function (req,res,next){
+ const name = req.params.name
+ const users = userOps.searchUser(name)
+ if(users.length==0)
+  res.send({message:"no user found with name "+name })
+ else
+  res.json(users)
+ //res.send({message: "number of users with name "+name+" are "+users.length})
+})
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+//----DEPOSIT--------------------//account number dosent exist
+app.patch('/transactions/deposit/accountNumber/:accountNumber',function (req,res,next) {
+ const accountNumber = req.params.accountNumber
+ const amount = req.query.amount * 1 // convert string to integer -- *1 or /1 or -1 --
+ // if (amount == 0)
+ //  res.status(400).send({message: "provide amount"})
+ const deposit = transactionOps.deposit(accountNumber, amount)
+ if (deposit == false)
+  res.status(400).send({message: "Account Number " + accountNumber + " dosent exist"})
+ else
+  res.send(deposit)
+})
+
+
+//-----TRANSFER------------------
+app.patch('/transactions/transfer/fromAccount/toAccount/:fromAccount/:toAccount',function (req,res,next){
+ const fromAccount = req.params.fromAccount
+ const toAccount = req.params.toAccount
+ const amount = req.query.amount * 1 //convert to integer
+ const transfers = transactionOps.transfer(fromAccount,toAccount,amount)
+ if(transfers==true)
+ res.send(transfers)
+ else if(transfers == false)
+  res.status(400).send({message: "invalied account numbers / insufficient amount"})
+    }
+)
+
+//------WITHDRAW-----------------
+app.patch('/transactions/withdraw/accountNumber/:accountNumber',function (req,res,next){
+ const accountNumber = req.params.accountNumber
+ const amount = req.query.amount * 1 // converting string to number
+ const withdraw = transactionOps.withdraw(accountNumber,amount)
+ if(withdraw==true)
+ res.send(withdraw)
+ else
+  res.status(400).send({ message :"invalied account number(or)amount/ insufficient amount"})
+})
+
+
+//--- READ TRANSACTIONS --------
+app.get('/transactions/allTransactions/accountNumber/:accountNumber',function (req,res,next){
+ const accountNumber = req.params.accountNumber
+ const transactionList =transactionOps.readTransactions(accountNumber)
+ if(transactionList.length===0)
+  res.send({message: "no transactions registred with account number :"+accountNumber})
+ else
+  res.send(transactionList)
+})
 
 //-----------------search users
 // app.get('/users/name/:name', function(req, res, next){

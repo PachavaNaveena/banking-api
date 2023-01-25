@@ -7,15 +7,12 @@ function deposit(accountNumber, amount) {
     if (!user) {
         console.log("User not found")
         return false;
-    }
-    user.balance = user.balance + amount
-    if (userOperations.updateUser(accountNumber, user)) {
+    } else{
+        user.balance = user.balance + amount
+        userOperations.updateUser(accountNumber, user)
         transferData(accountNumber,"",amount,"deposit")
         console.log("Successfully deposited");
         return true;
-    } else {
-        console.log("Failed deposited");
-        return false;
     }
 }
 
@@ -25,16 +22,15 @@ function transfer(fromAccountNumber, toAccountNumber, amount) {
     let toUser = userOperations.getUser(toAccountNumber)
 
     if(!fromUser){
-        console.log("invalied account no")
+        console.log("sender dosent exist")
         return false }
     else if(!toUser){
         console.log("recepient dosent exist")
         return false }
 
-    if(fromUser.balance < amount){
+    if (fromUser.balance < amount){
         console.log("insufficient balance " + fromUser.balance)
-        return false
-    }
+        return false }
 
     fromUser.balance = fromUser.balance - amount
     toUser.balance = toUser.balance + amount
@@ -55,14 +51,19 @@ function withdraw(accountNumber, amount) {
 
     if (!user){
         console.log("invalid account number")
-    } else if(user.balance < amount) {
+        return false }
+    else if(user.balance < amount){
         console.log("insufficient balance")
-    } else {
+        return false }
+    else if(amount<=0){
+        console.log("amount should be greater than 0")
+        return false }
+    else{
         user.balance = user.balance - amount
         userOperations.updateUser(accountNumber, user)
         transferData(accountNumber, "", amount, "withdraw")
         console.log("Balance Amount :"+ user.balance +" ,withdraw amount :"+ amount)
-    }
+        return true }
 }
 
 function readTransactions(accountNumber) {
