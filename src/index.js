@@ -120,9 +120,8 @@ app.put("/users/updateUser/accountNumber/:accountNumber",function (req,res,next)
 
  for (let i=0; i<givenFields.length; i++) {
   const field = givenFields[i]
-  if (requiredFields.indexOf(field) > -1) {
+  if (requiredFields.indexOf(field) > -1)
    user[field] = body[field]
-  }
  }
  user = userOps.updateUser(accountNumber,user)
  res.send(user)
