@@ -1,7 +1,7 @@
-const userOperations = require('./User')
-const transaction = require('./Transaction')
-const {v4} = require("uuid");
-const {getUser} = require("./User");
+// const userOperations = require('./User')
+// const transaction = require('./Transaction')
+// const {v4} = require("uuid");
+// const {getUser} = require("./User");
 
 //--------------- USER OPERATIONS -----------------------------------------------------
 
@@ -58,6 +58,7 @@ const bodyParser = require('body-parser')
 const userOps = require('./User')
 const transactionOps = require('./Transaction')
 const {static, response} = require("express");
+const {updateUser} = require("./User");
 
 const app = express()
 
@@ -110,12 +111,21 @@ app.post('/users/addUser',function (req,res,next){
 })
 
 
-//---------UPDATE USERS----------
+//---------UPDATE USERS----------//
 app.put("/users/updateUser/accountNumber/:accountNumber",function (req,res,next){
  const accountNumber = req.params.accountNumber
  const body = req.body
- const user = userOps.updateUser(accountNumber,body)
- res.send(user)
+ let user = userOps.getUser(accountNumber)
+ const givenFields = Object.keys(body)
+ const field = ["firstName","lastName","address","city","state"]
+ //const user1 = Object.assign(user,givenFields)
+ for (let i=0; i<givenFields.length; i++) {
+  const field = givenFields[i]
+  if (requiredFields.indexOf(field) > -1)
+   user[field] = body[field]
+ }
+  user2 = userOps.updateUser(accountNumber,user1)
+  res.send(user2)
 })
 
 
@@ -124,9 +134,9 @@ app.get('/users/searchUser/name/:name',function (req,res,next){
  const name = req.params.name
  const users = userOps.searchUser(name)
  if(users.length==0)
-  res.send({message:"no user found with name "+name })
+  res.send({message:"no user found with name "+name})
  else
-  res.json(users)
+  res.json({users, message: "number of users with name "+name+" are "+users.length })
  //res.send({message: "number of users with name "+name+" are "+users.length})
 })
 
@@ -180,7 +190,7 @@ app.get('/transactions/allTransactions/accountNumber/:accountNumber',function (r
   res.send({message: "no transactions registred with account number :"+accountNumber})
  else
   res.send(transactionList)
-})
+});
 
 
 app.listen(6000, function() {
