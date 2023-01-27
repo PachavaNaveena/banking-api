@@ -58,6 +58,7 @@ const bodyParser = require('body-parser')
 const userOps = require('./User')
 const transactionOps = require('./Transaction')
 const {static, response} = require("express");
+const {updateUser} = require("./User");
 
 const app = express()
 
@@ -116,15 +117,15 @@ app.put("/users/updateUser/accountNumber/:accountNumber",function (req,res,next)
  const body = req.body
  let user = userOps.getUser(accountNumber)
  const givenFields = Object.keys(body)
- const requiredFields = ["firstName","lastName","address","city","state"]
-
+ const field = ["firstName","lastName","address","city","state"]
+ //const user1 = Object.assign(user,givenFields)
  for (let i=0; i<givenFields.length; i++) {
   const field = givenFields[i]
   if (requiredFields.indexOf(field) > -1)
    user[field] = body[field]
  }
- user = userOps.updateUser(accountNumber,user)
- res.send(user)
+  user2 = userOps.updateUser(accountNumber,user1)
+  res.send(user2)
 })
 
 
@@ -133,9 +134,9 @@ app.get('/users/searchUser/name/:name',function (req,res,next){
  const name = req.params.name
  const users = userOps.searchUser(name)
  if(users.length==0)
-  res.send({message:"no user found with name "+name })
+  res.send({message:"no user found with name "+name})
  else
-  res.json(users)
+  res.json({users, message: "number of users with name "+name+" are "+users.length })
  //res.send({message: "number of users with name "+name+" are "+users.length})
 })
 
