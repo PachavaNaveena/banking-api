@@ -1,36 +1,51 @@
 
 const connectionOps = require('./connection.js')
 
-async function adduser(user){
-    const connection = await connectionOps.CreateConnection()
-    const query =  "INSERT INTO `bank`.`users` (`id`, `firstname`, `lastname`, `email`, `address1`, `address2`, `city`, `state`, `zipcode`, `balance`,`createddate`,`updateddate`)" +
+async function addUser(user){
+    let connection = await connectionOps.CreateConnection()
+    let query =  "INSERT INTO `bank`.`users` (`id`, `firstname`, `lastname`, `email`, `address1`, `address2`, `city`, `state`, `zipcode`, `balance`,`createddate`,`updateddate`)" +
         "VALUES ('"+user.id+"', '"+user.firstname+"', '"+user.lastname+"', '"+user.email+"', '"+user.address1+"','"+user.address2+"', '"+user.city+"', '"+user.state+"', '"+user.zipcode+"', '"+user.balance+"','"+user.createddate+"','"+user.updateddate+"');"
-    const [rows, fields] = await connection.execute(query);
+    let [rows, fields] = await connection.execute(query);
     console.log(rows)
 }
 
+async function updateUser(id,user){
+   let connection = await  connectionOps.CreateConnection()
+    let query = "UPDATE `bank`.`users` SET `firstname` = '"+user.firstname+"', `lastname` = '"+user.lastname+"', `email` = '"+user.email+"', `address1` = '"+user.address1+"'," +
+        "`address2` = '"+user.address2+"', `city` = '"+user.city+"', `state` = '"+user.state+"', `zipcode` = '"+user.zipcode+"',`updateddate` = '"+user.updateddate+"' WHERE (`id` = '"+id+"');"
+    let [rows, fields] =  await connection.execute(query);
+   console.log(rows)
+}
 
-const user = {
-    id: '5',
-    firstname: 'naveena',
-    lastname: 'pachava',
-    email: 'nav@',
-    address1: 'aspin',
-    address2: null,
-    city: 'dallas',
-    state: 'TX',
-    zipcode: 76224,
-    balance: 0,
-    createddate: new Date().toJSON().slice(0,18),
-    updateddate: new Date().toJSON().slice(0,18)
+async function getUser(id){
+let connection = await connectionOps.CreateConnection()
+    let query = "SELECT * FROM `bank`.`users` WHERE id ='"+id+"';"
+    let[rows, fields] = await connection.execute(query);
+    console.log(rows)
+    return rows
+}
+
+async function searchUser(name){
+    let connection = await connectionOps.CreateConnection()
+    let query = "select * from `bank`.`users` where firstname = '"+name+"' || lastname = '"+name+"';"
+    let[rows, fields] = await connection.execute(query);
+    console.log(rows)
+    return true
+}
+
+async function getUsers(){
+    let connection = await connectionOps.CreateConnection()
+    let query = "SELECT * FROM `bank`.`users`;"
+    let[rows, fields] = await connection.execute(query);
+    console.log(rows)
+    return true
 }
 
 
-adduser(user)
-// const firstname = 'naveena',lastname ='pachava'
-// const fullname = 'INSERT INTO `bank`.`users` (`id`, `firstname`, `lastname`, `email`' +firstname+'INSERT INTO `bank`.`users` (`id`, `firstname`, `lastname`, `email`_'+lastname+'INSERT INTO `bank`.`users` (`id`, `firstname`, `lastname`, `email`'
-// console.log(fullname)
-//
-//
-//
-//console.log(query)
+module.exports = {
+    addUser: addUser,
+    updateUser: updateUser,
+    getUser: getUser,
+    searchUser: searchUser,
+    getUsers: getUsers
+}
