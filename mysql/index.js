@@ -1,5 +1,6 @@
 
 const userOperations = require('./user.js')
+const transactionOperations = require('./transaction.js')
 
 //--------------------------------USER OPERATIONS----------------------
 //-----ADD USER--------
@@ -23,18 +24,24 @@ const userOperations = require('./user.js')
 //id: '1',
 // balance: 0,
 // createddate: new Date().toJSON().slice(0,18),
+userOperations.getUser(7).then( result => console.log( result )); // --------- this syntax works to print the user
+console.log(user.balance)//  ------not working
+let user = userOperations.getUser(7)
+console.log(user)
 
-// userOperations.updateUser(7,{         // for update shouldnt change ID,balance , create date & update should be done if something changes in data
+// let user = {         // for update shouldnt change ID,balance- (will change this when updating balance of user while doing transactions) , create date & update should be done if something changes in data
 //     firstname: 'sarath',
 //     lastname: 'Chunchu',
 //     email: 'sarath@',
-//     address1: '333 st',
+//     address1: '444 st',
 //     address2: 'aspin',
 //     city: 'bart',
 //     state: 'OKC',
 //     zipcode: 45577,
+//     balance: 0,
 //     updateddate: new Date().toJSON().slice(0,18)
-//  })
+// }
+// userOperations.updateUser(7,user)
 
 
 //---------FIND USER-----------
@@ -46,4 +53,6 @@ const userOperations = require('./user.js')
 //---------SEARCH USER----------
 //userOperations.searchUser('pachava')
 
-
+//-----------------------------------------------------aTRANSACTION OPERATIONS------------------------------------------
+//-------DEPOSIT------------
+//transactionOperations.deposit(3,500)
