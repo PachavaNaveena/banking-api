@@ -1,47 +1,81 @@
 const connectionOps = require('./connection.js')
 const userOperations = require('./User')
-const {uuid} = require("uuidv4");
+//const {uuid} = require("uuidv4");
+const {v4} = require("uuid");
 
 async function deposit(id,amount){
+   let user = await userOperations.getUser(id)
+    if(!user)
+        return false
+    if(amount < 1 || amount >100000)
+        return false
 
-    //console.log(user)
+    user.balance = user.balance + amount
+    await userOperations.updateUser(id,user)
+    console.log("successfully deposited")
 
-    // console.log(user.balance)
-    //userOperations.updateUser(id,user)
-   // let user = userOperations.getUser(id)
-    //user.balance = user.balance + amount
+    /* ALTERNATE WAY
     let connection = await connectionOps.CreateConnection()
-    let query1 = "SELECT `balance` FROM `bank`.`users` where (`id`='"+id+"');"
-    let  [rows1,fields1] = await connection.execute(query1);
-    console.log(rows1)
-    console.log(rows1[balance])
-    let balance = rows1.balance+amount
-    let query2 = "UPDATE `bank`.`users` SET `balance` = '"+balance+"' WHERE (`id` = '"+id+"');"
-    let [rows2,fields2] = await connection.execute(query2);
-    console.log(rows2)
+    let query = "UPDATE `bank`.`users` SET `balance` = '"+user.balance+"',`updateddate` = '"+new Date().toJSON().slice(0,18)+"' WHERE (`id` = '"+id+"');"
+    let [rows,fields2] = await connection.execute(query); */
 
-
-    // transferData(id,"","DEPOSIT",amount)
-    // console.log(user)
+    await transferData(id,id,"DEPOSIT",amount)
     return true
 }
-async function transfer(){
-    let connection = connectionOps.CreateConnection()
 
+async function transfer(fromID,toID,amount){
+    let fromUser = await userOperations.getUser(fromID)
+    let toUser = await  userOperations.getUser(toID)
+
+    if(!fromUser || !toUser)
+        return false
+    if(amount < 1 || amount >100000)
+        return false
+    if (fromUser.balance < amount){
+        console.log("insufficient balance " + fromUser.balance)
+        return false }
+
+    fromUser.balance = fromUser.balance-amount
+    toUser.balance = toUser.balance+amount
+
+    let user = [fromUser,toUser]
+    let id = [fromID,toID]
+    for(let i=0;i<user.length;i++) {
+        await userOperations.updateUser(id[i],user[i])
+    }
+    await transferData(fromID,toID,"TRANSFER",amount)
+    return  true
 }
-async function withdraw(){
-    let connection = connectionOps.CreateConnection()
 
+async function withdraw(id,amount){
+    let user = await userOperations.getUser(id)
+    if(!user)
+        return false
+    if(amount <0 || amount>100000)
+        return false
+    if (user.balance < amount){
+        console.log("insufficient balance " +user.balance)
+        return false }
+
+    user.balance = user.balance - amount
+    await userOperations.updateUser(id,user)
+    await transferData(id,id,"WITHDRAW",amount)
+    return true
 }
-async function readTransactions(){
-    let connection = connectionOps.CreateConnection()
-
+async function readTransactions(id){
+    let user = await userOperations.getUser(id)
+    if(!user)
+        return false
+    let connection = await connectionOps.CreateConnection()
+    let query = "SELECT * FROM `bank`.`tranactions` WHERE `from account`="+id+" || `to account`="+id+";"
+    let [rows,fields] = await connection.execute(query);
+    return rows
 }
 
 async function transferData(fromAccount,toAccount,type,amount){
-    let connection = connectionOps.CreateConnection()
-    let query = "INSERT INTO `bank`.`tranactions` (`transaction-id`, `type`, `from`, `to`, `amount`, `date`) VALUES ('"+uuid()+"', 'deposit', '"+id+"', '"+id+"', '"+amount+"', '"+new Date().toJSON().slice(0,18)+"');"
-    let [rows,fields] = (await connection).execute(query);
+    let connection = await connectionOps.CreateConnection()
+    let query = "INSERT INTO `bank`.`tranactions` (`transaction-id`, `type`, `from account`, `to account`, `amount`, `date`) VALUES ('"+v4()+"', '"+type+"', '"+fromAccount+"', '"+toAccount+"', '"+amount+"', '"+new Date().toJSON().slice(0,18)+"');"
+    let[rows,fields] = await connection.execute(query);
 }
 
 
