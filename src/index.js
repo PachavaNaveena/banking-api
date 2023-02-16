@@ -148,7 +148,7 @@ app.get('/users/name/:name',function (req,res,next){
 
 //----------------------------------------------------------------------------------------------------------------------
 
-//----DEPOSIT--------------------//account number dosent exist
+//----DEPOSIT/WITHDRAW--------------------//account number dosent exist
 app.patch('/transactions/accountNumber/:accountNumber/type/:type',function (req,res,next) {
  const accountNumber = req.params.accountNumber
  const type = req.params.type
@@ -166,7 +166,7 @@ app.patch('/transactions/accountNumber/:accountNumber/type/:type',function (req,
 
  let user = userOps.getUser(accountNumber)
  if(result === false) {
-  res.status(400).send({message: "Account Number " + accountNumber + " dosent exist/insufficient balance" + user.balance + " /provide amount"})
+  res.status(400).send({message: "Account Number " + accountNumber + " dosent exist/insufficient balance " + user.balance + " /provide amount"})
  } else {
   res.send({message: `Balance Amount :${user.balance} ,${type} amount :${amount}`})
  }
@@ -177,10 +177,10 @@ app.patch('/transactions/accountNumber/:accountNumber/type/:type',function (req,
 app.patch('/transactions/fromAccount/toAccount/:fromAccount/:toAccount',function (req,res,next){
  const fromAccount = req.params.fromAccount
  const toAccount = req.params.toAccount
- const body = res.body
+ const body = req.body
  const amount = body.amount
 
- if (amount == 0)
+ if (amount === 0)
   res.status(400).send({message: "provide amount"})
 
  const transfers = transactionOps.transfer(fromAccount,toAccount,amount)
@@ -191,7 +191,7 @@ app.patch('/transactions/fromAccount/toAccount/:fromAccount/:toAccount',function
  res.send(transfers)
 })
 
-//------WITHDRAW-----------------
+//------JUST WITHDRAW-----------------
 app.patch('/transactions/accountNumber/:accountNumber',function (req,res,next){
  const accountNumber = req.params.accountNumber
  const body = req.body
