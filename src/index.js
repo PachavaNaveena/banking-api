@@ -58,6 +58,7 @@ const bodyParser = require('body-parser')
 const userOps = require('./User')
 const transactionOps = require('./Transaction')
 const {static, response} = require("express");
+const {deposit, withdraw} = require("./Transaction");
 
 //const {deposit, withdraw} = require("./Transaction");
 //const {updateUser} = require("./User");
@@ -148,24 +149,27 @@ app.get('/users/name/:name',function (req,res,next){
 //----------------------------------------------------------------------------------------------------------------------
 
 //----DEPOSIT--------------------//account number dosent exist
-app.patch('/transactions/accountNumber/:accountNumber',function (req,res,next) {
+app.patch('/transactions/accountNumber/:accountNumber/type/:type',function (req,res,next) {
  const accountNumber = req.params.accountNumber
- const type = req.query.type
+ const type = req.params.type
  const body = req.body
  const amount = body.amount
+ let result
 
- if (amount == 0)
-   res.status(400).send({message: "provide amount"})
+ if(type === "deposit"){
+  result = transactionOps.deposit(accountNumber, amount)
+ } else if (type === "withdraw"){
+  result = transactionOps.withdraw(accountNumber, amount)
+ } else{
+  return res.status(400).send({message: "wrong request type entered"})
+ }
 
- if(type=="deposit")
- let action = transactionOps.deposit(accountNumber,amount)
- else
-  let action = transactionOps.withdraw(accountNumber,amount)
-
- if(action==false)
-  res.status(400).send({message: "Account Number " + accountNumber + " dosent exist"})
- else
-  res.send(action)
+ let user = userOps.getUser(accountNumber)
+ if(result === false) {
+  res.status(400).send({message: "Account Number " + accountNumber + " dosent exist/insufficient balance" + user.balance + " /provide amount"})
+ } else {
+  res.send({message: `Balance Amount :${user.balance} ,${type} amount :${amount}`})
+ }
 })
 
 
