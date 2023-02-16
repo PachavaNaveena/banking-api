@@ -6,13 +6,14 @@ const userOperations = require('./user.js')
 const transactionOperations = require('./transaction.js')
 const {static, response} = require("express");
 const userOps = require("../src/User");
+const moment = require("moment");
 
 const app = express()
 
 app.use(bodyParser.json({limit: '2mb', type: '*/json'}))
 
 //----------GET USERS
-app.get('/mysql/getUsers',  async function (req,res,next){
+app.get('/mysql/getUser/list',  async function (req,res,next){
    const users = await userOperations.getUsers()
     if(users == null)
         res.send({message:"empty user list"})
@@ -35,24 +36,28 @@ app.put('/mysql/updateUser/id/:id',async function(req,res,next){
     const id = req.params.id
     const body = req.body
     let user = await userOperations.getUser(id)
-    user.updateddate = new Date().toJSON().slice(0,18)
     const givenFields = Object.keys(body)
     const requiredFields = ['firstname', 'lastname', 'email', 'address1', 'address2', 'city', 'state', 'zipcode']
-
     for (let i=0; i< givenFields.length; i++){
         let field = givenFields[i]
         if(requiredFields.indexOf(field) > -1){
             user[field] = body[field]
         }
     }
-    user =  userOperations.updateUser(id,user)
-res.send(user)
+    let result = await userOperations.updateUser(user)
+    if (result === 'same_email') {
+       return  res.status(400).json({
+            message: `Email: ${user.email} already exist`
+        })
+    }
+    res.send(user)
 })
 
 //---------ADD USER
 app.post('/mysql/addUser',async function(req,res,next){
     const body = req.body
-    const requiredFields = ['id','firstname', 'lastname', 'email', 'address1', 'address2', 'city', 'state', 'zipcode','balance','createddate','updateddate']
+
+    const requiredFields = ['firstname', 'lastname', 'email', 'address1', 'address2', 'city', 'state', 'zipcode']
     const givenFields = Object.keys(body)
     const missing = []
     requiredFields.forEach(function (value){
@@ -61,10 +66,12 @@ app.post('/mysql/addUser',async function(req,res,next){
     })
     if(missing.length > 0)
         res.status(400).send({message:"missing required fields are "+missing.join(",")})
-    else{
-        userOperations.addUser(body)
-        res.send(body)
-    }
+    const adduser = await userOperations.addUser(body)
+        if(adduser == "same_email")
+        res.status(400).send({message:"email "+body.email+" alredy in use"})
+        else{
+            res.status(200).json(adduser)
+        }
 })
 
 //-----------SEARCH USER
@@ -72,7 +79,7 @@ app.get('/mysql/searchUser/name/:name',async function (req,res,next){
     const name = req.params.name
     const users = await userOperations.searchUser(name)
     if(users.length == 0)
-        res.status(400).send({message:"user dose`t exist with name "+name})
+        res.status(400).send({message:"user dose`t exist with name:"+name})
     else
         res.json(users)
 })
@@ -84,24 +91,34 @@ app.patch('/mysql/deposit/id/:id',async function(req,res,next){
     const id = req.params.id
     const body = req.body
     const amount = body.amount
-    const deposit = await transactionOperations.deposit(id,amount)
-    if(deposit == false)
-        res.status(400).send({message:"user dosent exist with id "+id+" / Enter valid amount between 1 to 100000"})
+    let result = await transactionOperations.deposit(id,amount)
+    if(result == "no_user")
+        res.status(400).send({message:"user dosent exist with id "+id})
+    else if(result == "false_amount")
+        res.status(400).send({message:"provide amount between 1 to 100000"})
     else
-        res.send(deposit)
+        res.status(200).json({message: `user ID: ${result.id} with current balance ${result.balance}`})
 })
 
 //----------TRANSFER
-app.patch('/mysql/transfer/fromID/toID/:fromID/:toID',async function(req,res,next){
+app.patch('/mysql/transfer/fromID/:fromID/toID/:toID',async function(req,res,next){
     const fromID = req.params.fromID
     const toID = req.params.toID
     const body = req.body
     const amount = body.amount
     const transfer = await transactionOperations.transfer(fromID,toID,amount)
-    if(transfer == false)
-        res.status(400).send({message:"user dosent exist with fromid "+fromID+" or toID "+toID+" / Enter valid amount between 1 to 100000/ insufficient balance"})
+    if(transfer == "no_fromUser")
+        res.status(400).json({message:`user dosent exist with fromid ${fromID}`})
+    else if(transfer=="no_toUser")
+        res.status(400).json({message:`user dosent exist with fromid ${toID}`})
+    else if(transfer== "false_amount")
+        res.status(400).json({message: `Enter valid amount between 1 to 100000`})
+    else if(transfer=="inn_bal"){
+        let from_user = await userOperations.getUser(fromID)
+        res.status(400).json({message: `id :${fromID} has insufficient balance `+from_user.balance})
+    }
     else
-        res.send(transfer)
+        res.json(transfer)
 })
 
 app.patch('/mysql/withdraw/id/:id',async function(req,res,next){
