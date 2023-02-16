@@ -3,6 +3,7 @@ const userOperations = require('./User')
 //const {uuid} = require("uuidv4");
 const {v4} = require("uuid");
 const {getUser} = require("./user");
+const InvalidDataError = require("./InvalidDataError")
 
 async function deposit(id,amount){
    let user = await userOperations.getUser(id)
@@ -54,20 +55,28 @@ async function transfer(fromID,toID,amount){
 }
 
 async function withdraw(id,amount){
-    let user = await userOperations.getUser(id)
-    if(!user)
-        return false
-    if(amount <0 || amount>100000)
-        return false
-    if (user.balance < amount){
-        console.log("insufficient balance " +user.balance)
-        return false }
+    try {
+        let user = await userOperations.getUser(id)
+        if (!user) {
+            throw new Error("User does not exist")
+        }
+        if (amount < 0 || amount > 100000) {
+            throw new InvalidDataError("amount")
+        }
+        if (user.balance < amount) {
+            throw new Error("insufficient balance")
+        }
 
-    user.balance = user.balance - amount
-    await userOperations.updateUser(id,user)
-    await transferData(id,id,"WITHDRAW",amount)
-    return true
+        user.balance = user.balance - amount
+        await userOperations.updateUser(user)
+        await transferData(id, id, "WITHDRAW", amount)
+        return userOperations.getUser(id)
+    } catch (e) {
+        console.error("Error:  withdraw: " + e.toString());
+        throw e
+    }
 }
+
 async function readTransactions(id){
     let user = await userOperations.getUser(id)
     if(!user)

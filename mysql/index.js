@@ -7,6 +7,7 @@ const transactionOperations = require('./transaction.js')
 const {static, response} = require("express");
 const userOps = require("../src/User");
 const moment = require("moment");
+const {isDBActive} = require("./connection");
 
 const app = express()
 
@@ -97,7 +98,7 @@ app.patch('/mysql/deposit/id/:id',async function(req,res,next){
     else if(result == "false_amount")
         res.status(400).send({message:"provide amount between 1 to 100000"})
     else
-        res.status(200).json({message: `user ID: ${result.id} with current balance ${result.balance}`})
+        res.status(200).json({message: `successfully deposited & user ID: ${result.id} with current balance ${result.balance}`})
 })
 
 //----------TRANSFER
@@ -106,30 +107,34 @@ app.patch('/mysql/transfer/fromID/:fromID/toID/:toID',async function(req,res,nex
     const toID = req.params.toID
     const body = req.body
     const amount = body.amount
-    const transfer = await transactionOperations.transfer(fromID,toID,amount)
-    if(transfer == "no_fromUser")
+    const result = await transactionOperations.transfer(fromID,toID,amount)
+    if(result === "no_fromUser"){
         res.status(400).json({message:`user dosent exist with fromid ${fromID}`})
-    else if(transfer=="no_toUser")
+    } else if(result === "no_toUser"){
         res.status(400).json({message:`user dosent exist with fromid ${toID}`})
-    else if(transfer== "false_amount")
+    } else if(result === "false_amount"){
         res.status(400).json({message: `Enter valid amount between 1 to 100000`})
-    else if(transfer=="inn_bal"){
+    } else if(result === "inn_bal"){
         let from_user = await userOperations.getUser(fromID)
-        res.status(400).json({message: `id :${fromID} has insufficient balance `+from_user.balance})
+        res.status(400).json({message: `id :${fromID} has insufficient balance ${from_user.balance}`})
+    } else{
+        res.json({message:`${amount} successfully debited from ${result[0].firstname} with ID:${result[0].id} to ${result[1].firstname} with ID:${result[1].id} & CURRENT BALANCE:${result[0].balance} with ID: ${result[0].id}`})
     }
-    else
-        res.json(transfer)
 })
 
 app.patch('/mysql/withdraw/id/:id',async function(req,res,next){
-    const id = req.params.id
-    const body = req.body
-    const amount = body.amount
-    const withdraw = await transactionOperations.withdraw(id,amount)
-    if(withdraw == false)
-        res.status(400).send({message:"user dosent exist with id "+id+" / Enter valid amount between 1 to 100000/ insufficient balance"})
-    else
-        res.send(withdraw)
+    try {
+        const id = req.params.id
+        const body = req.body
+        const amount = body.amount
+        const result = await transactionOperations.withdraw(id, amount)
+        res.json({message: `${amount} successfully withdrawn & CURRENT BALANCE:${result.balance} with ID: ${result.id}`})
+    } catch (e) {
+        const status = e.status || 400
+        res.status(status).json({
+            message: e.toString()
+        })
+    }
 })
 
 app.get('/mysql/readTransactions/id/:id',async function(req,res,next){
@@ -139,6 +144,18 @@ app.get('/mysql/readTransactions/id/:id',async function(req,res,next){
         res.status(400).send({message:"user dosent exist / No transfers with id "+id})
     else
         res.send(readTransactions)
+})
+
+app.get('/db/status', async (req, res, next) => {
+    const result = await isDBActive();
+    if (result) {
+        return res.json({
+            message: 'DB active'
+        })
+    }
+    res.json({
+        message: 'DB Inactive'
+    })
 })
 app.listen(6000, function() {
     console.log("App running on http://localhost:6000")

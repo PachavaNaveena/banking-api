@@ -1,17 +1,33 @@
 const mysql = require('mysql2/promise');
+const InternalError = require('./InternalError')
 
 
 async function  CreateConnection() {
-    const connection = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        database: 'bank',
-        password: 'Naveena9@'
-    });
-    return connection
+    try {
+        const connection = await mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            database: 'bank',
+            password: 'Naveena9@'
+        });
+        return connection
+    } catch (e) {
+        throw new InternalError("Db failed")
+    }
+}
+
+async function isDBActive() {
+    try {
+        let connection = await CreateConnection()
+        return !!connection;
+    } catch (e) {
+        console.log(e)
+        return false
+    }
 }
 module.exports = {
-    CreateConnection
+    CreateConnection,
+    isDBActive
 }
 
 //
