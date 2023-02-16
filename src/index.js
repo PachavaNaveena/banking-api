@@ -58,7 +58,10 @@ const bodyParser = require('body-parser')
 const userOps = require('./User')
 const transactionOps = require('./Transaction')
 const {static, response} = require("express");
-const {deposit, withdraw} = require("./Transaction");
+
+//const {deposit, withdraw} = require("./Transaction");
+//const {updateUser} = require("./User");
+ 
 
 const app = express()
 
@@ -135,9 +138,9 @@ app.get('/users/name/:name',function (req,res,next){
  const name = req.params.name
  const users = userOps.searchUser(name)
  if(users.length==0)
-  res.send({message:"no user found with name "+name })
+  res.send({message:"no user found with name "+name})
  else
-  res.json(users)
+  res.json({users, message: "number of users with name "+name+" are "+users.length })
  //res.send({message: "number of users with name "+name+" are "+users.length})
 })
 
