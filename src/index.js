@@ -58,14 +58,17 @@ const bodyParser = require('body-parser')
 const userOps = require('./User')
 const transactionOps = require('./Transaction')
 const {static, response} = require("express");
-const {updateUser} = require("./User");
+
+//const {deposit, withdraw} = require("./Transaction");
+//const {updateUser} = require("./User");
+ 
 
 const app = express()
 
 app.use(bodyParser.json({limit: '2mb', type: '*/json'}))
 
 //-----------GET USERS-----------
-app.get('/users/getUsers', function(req, res, next){
+app.get('/users', function(req, res, next){
  const x = userOps.getUsers();
  if(x == null)
   res.send({message: "empty users list"})
@@ -75,7 +78,7 @@ app.get('/users/getUsers', function(req, res, next){
 
 
 //-----------GET USER------------
-app.get("/users/getUser/accountNumber/:accountNumber", function (req,res,next){
+app.get("/users/accountNumber/:accountNumber", function (req,res,next){
  const accountNumber = req.params.accountNumber
  const users = userOps.getUser(accountNumber)
  if(users==null)
@@ -86,7 +89,7 @@ app.get("/users/getUser/accountNumber/:accountNumber", function (req,res,next){
 
 
 //-----------ADD USERS------------
-app.post('/users/addUser',function (req,res,next){
+app.post('/users',function (req,res,next){
  const body = req.body
  const requiredFields = ["firstName","lastName","accountNumber","balance","address","city","state"]
  const givenFields = Object.keys(body)
@@ -112,25 +115,26 @@ app.post('/users/addUser',function (req,res,next){
 
 
 //---------UPDATE USERS----------//
-app.put("/users/updateUser/accountNumber/:accountNumber",function (req,res,next){
+app.put("/users/accountNumber/:accountNumber",function (req,res,next){
  const accountNumber = req.params.accountNumber
  const body = req.body
  let user = userOps.getUser(accountNumber)
  const givenFields = Object.keys(body)
- const field = ["firstName","lastName","address","city","state"]
- //const user1 = Object.assign(user,givenFields)
+ const requiredFields = ["firstName","lastName","address","city","state"]
+
  for (let i=0; i<givenFields.length; i++) {
   const field = givenFields[i]
-  if (requiredFields.indexOf(field) > -1)
+  if (requiredFields.indexOf(field) > -1) {
    user[field] = body[field]
+  }
  }
-  user2 = userOps.updateUser(accountNumber,user1)
-  res.send(user2)
+ user = userOps.updateUser(accountNumber,user)
+ res.send(user)
 })
 
 
 //------- SEARCH USER-------------
-app.get('/users/searchUser/name/:name',function (req,res,next){
+app.get('/users/name/:name',function (req,res,next){
  const name = req.params.name
  const users = userOps.searchUser(name)
  if(users.length==0)
@@ -144,46 +148,65 @@ app.get('/users/searchUser/name/:name',function (req,res,next){
 //----------------------------------------------------------------------------------------------------------------------
 
 //----DEPOSIT--------------------//account number dosent exist
-app.patch('/transactions/deposit/accountNumber/:accountNumber',function (req,res,next) {
+app.patch('/transactions/accountNumber/:accountNumber',function (req,res,next) {
  const accountNumber = req.params.accountNumber
- const amount = req.query.amount * 1 // convert string to integer -- *1 or /1 or -1 --
- // if (amount == 0)
- //  res.status(400).send({message: "provide amount"})
- const deposit = transactionOps.deposit(accountNumber, amount)
- if (deposit == false)
+ const type = req.query.type
+ const body = req.body
+ const amount = body.amount
+
+ if (amount == 0)
+   res.status(400).send({message: "provide amount"})
+
+ if(type=="deposit")
+ let action = transactionOps.deposit(accountNumber,amount)
+ else
+  let action = transactionOps.withdraw(accountNumber,amount)
+
+ if(action==false)
   res.status(400).send({message: "Account Number " + accountNumber + " dosent exist"})
  else
-  res.send(deposit)
+  res.send(action)
 })
 
 
 //-----TRANSFER------------------
-app.patch('/transactions/transfer/fromAccount/toAccount/:fromAccount/:toAccount',function (req,res,next){
+app.patch('/transactions/fromAccount/toAccount/:fromAccount/:toAccount',function (req,res,next){
  const fromAccount = req.params.fromAccount
  const toAccount = req.params.toAccount
- const amount = req.query.amount * 1 //convert to integer
+ const body = res.body
+ const amount = body.amount
+
+ if (amount == 0)
+  res.status(400).send({message: "provide amount"})
+
  const transfers = transactionOps.transfer(fromAccount,toAccount,amount)
- if(transfers==true)
- res.send(transfers)
- else if(transfers == false)
+
+ if(transfers==false)
   res.status(400).send({message: "invalied account numbers / insufficient amount"})
-    }
-)
+ else
+ res.send(transfers)
+})
 
 //------WITHDRAW-----------------
-app.patch('/transactions/withdraw/accountNumber/:accountNumber',function (req,res,next){
+app.patch('/transactions/accountNumber/:accountNumber',function (req,res,next){
  const accountNumber = req.params.accountNumber
- const amount = req.query.amount * 1 // converting string to number
+ const body = req.body
+ const amount = body.amount
+
+ if (amount == 0)
+  res.status(400).send({message: "provide amount"})
+
  const withdraw = transactionOps.withdraw(accountNumber,amount)
- if(withdraw==true)
- res.send(withdraw)
- else
+
+ if(withdraw==false)
   res.status(400).send({ message :"invalied account number(or)amount/ insufficient amount"})
+ else
+ res.send(withdraw)
 })
 
 
 //--- READ TRANSACTIONS --------
-app.get('/transactions/allTransactions/accountNumber/:accountNumber',function (req,res,next){
+app.get('/transactions/accountNumber/:accountNumber',function (req,res,next){
  const accountNumber = req.params.accountNumber
  const transactionList =transactionOps.readTransactions(accountNumber)
  if(transactionList.length===0)
