@@ -1,5 +1,5 @@
 const mysql = require('mysql2/promise');
-const InternalError = require('./InternalError')
+const InternalError = require('../errors/InternalError')
 
 
 async function  CreateConnection() {

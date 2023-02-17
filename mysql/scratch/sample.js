@@ -1,6 +1,7 @@
+const DefaultError = require('../errors/DefaultError')
 function divide (a, b) {
     if (isNaN(a) || isNaN(b)) {
-        throw new Error("a or b is not a number")
+        throw new DefaultError("a or b is not a number")
     }
     return a / b
 }

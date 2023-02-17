@@ -220,8 +220,8 @@ app.get('/transactions/accountNumber/:accountNumber',function (req,res,next){
 });
 
 
-app.listen(6000, function() {
- console.log("App running on http://localhost:6000")
+app.listen(6001, function() {
+ console.log("App running on http://localhost:6001")
 })
 
 

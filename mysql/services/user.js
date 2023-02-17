@@ -1,10 +1,7 @@
-
-const connectionOps = require('./connection.js')
-const utlOps = require('./util')
-const moment = require("moment/moment");
+const connectionOps = require('../db/connection.js');
 const {v4} = require("uuid");
-const util = require("util");
-const {getCurrentDate} = require("./util");
+const {getCurrentDate} = require("../utils/util");
+const atob = require("atob");
 
 async function addUser(user){
     const email = await email_check(user.email)
@@ -76,10 +73,37 @@ async function email_check(email, id = '') {
     return false;
 }
 
+const login = async (email, password) => {
+    let connection = await connectionOps.CreateConnection()
+    email = email.trim()
+    let query = `SELECT email, id FROM users where TRIM(email) = '${email}'` // and password = '${password}'
+    const [data] = await connection.query(query);
+    if (data.length) {
+        return data[0]
+    }
+    return false
+}
+const isTokenValid = async (authorization) => {
+    try {
+        authorization = authorization.split(" ")
+        let auth = '';
+        if (authorization.length === 2) {
+            auth = atob(authorization[1])
+            auth = auth.split(":")
+            return login(auth[0], auth[1])
+        }
+        return false
+    } catch (e) {
+        console.error(e)
+        return false
+    }
+}
+
 module.exports = {
     addUser: addUser,
     updateUser: updateUser,
     getUser: getUser,
     searchUser: searchUser,
-    getUsers: getUsers
+    getUsers: getUsers,
+    isTokenValid
 }

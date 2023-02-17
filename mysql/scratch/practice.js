@@ -1,4 +1,4 @@
-const transactionOperations = require("./transaction");
+const transactionOperations = require("../services/transaction");
 const moment = require("moment");
 let arr = [{num:10,class:'ero'},{num:20, class:'zym'} ,{num:30,class:'zumba'},{num:40,class:''}]
 let arr2 = {FN:'naveena',LN:'pachava',city:'ongole',mobile:'23456789'}

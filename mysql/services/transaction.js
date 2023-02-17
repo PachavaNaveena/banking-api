@@ -1,9 +1,10 @@
-const connectionOps = require('./connection.js')
-const userOperations = require('./User')
+const connectionOps = require('../db/connection.js')
+const userOperations = require('./user')
 //const {uuid} = require("uuidv4");
 const {v4} = require("uuid");
 const {getUser} = require("./user");
-const InvalidDataError = require("./InvalidDataError")
+const InvalidDataError = require("../errors/InvalidDataError")
+const DefaultError = require("../errors/DefaultError")
 
 async function deposit(id,amount){
    let user = await userOperations.getUser(id)
@@ -58,13 +59,13 @@ async function withdraw(id,amount){
     try {
         let user = await userOperations.getUser(id)
         if (!user) {
-            throw new Error("User does not exist")
+            throw new DefaultError("User does not exist")
         }
         if (amount < 0 || amount > 100000) {
             throw new InvalidDataError("amount")
         }
         if (user.balance < amount) {
-            throw new Error("insufficient balance")
+            throw new DefaultError("insufficient balance")
         }
 
         user.balance = user.balance - amount

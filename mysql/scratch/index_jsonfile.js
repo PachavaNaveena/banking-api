@@ -1,6 +1,6 @@
 
-const userOperations = require('./user.js')
-const transactionOperations = require('./transaction.js')
+const userOperations = require('../services/user.js')
+const transactionOperations = require('../services/transaction.js')
 
 //--------------------------------USER OPERATIONS----------------------
 //-----ADD USER--------
