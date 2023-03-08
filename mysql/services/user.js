@@ -41,13 +41,13 @@ async function addUser(user){
 }
 
 async function updateUser(user){
-    if(user.email){
-        const email = await email_check(user.email, user.id)
-        console.log(email)
-        if(email) {
-            return "same_email"
-        }
-    }
+    // if(user.email){
+    //     const email = await email_check(user.email, user.id)
+    //     console.log(email)
+    //     if(email) {
+    //         return "same_email"
+    //     }
+    // }
     const currentDate = getCurrentDate();
     let connection = await  connectionOps.CreateConnection()
     let query = "UPDATE `bank`.`users` SET `firstname` = '"+user.firstname+"', `lastname` = '"+user.lastname+"', `email` = '"+user.email+"', `address1` = '"+user.address1+"'," +
