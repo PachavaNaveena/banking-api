@@ -10,6 +10,7 @@ const app = express()
 app.use(bodyParser.json({limit: '2mb', type: '*/json'}))
 app.use('/', routes)
 
+//DATABASE STATUS
 app.get('/db/status', async (req, res, next) => {
     const result = await isDBActive();
     if (result) {
@@ -22,7 +23,7 @@ app.get('/db/status', async (req, res, next) => {
     })
 })
 
-app.use((error, req, res, next) => {
+app.use((error, req, res, next) => {             //this is for what function??????
     const status = error.status || 500
     res.status(status).json({
         message: error.toString()

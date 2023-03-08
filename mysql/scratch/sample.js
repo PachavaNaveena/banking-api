@@ -19,14 +19,14 @@ function isEven(x) {
 
 function print() {
     try {
-        const result = isEven('abc')
+         const result = isEven('124')
         console.log(result)
     } catch (e) {
-        console.log(e.toString())
+        console.error(e.toString())
     }
 }
 
 print()
 
-let x = 'fdas'
-console.log(!!x);
+// let x = 'fdas'
+// console.log(!!x);

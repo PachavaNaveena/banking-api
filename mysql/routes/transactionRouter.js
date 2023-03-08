@@ -41,6 +41,7 @@ router.patch('/transfer/fromID/:fromID/toID/:toID',async function(req,res,next){
     }
 })
 
+//WITHDRAW
 router.patch('/withdraw/id/:id',async function(req,res,next){
     try {
         const id = req.params.id
@@ -55,6 +56,7 @@ router.patch('/withdraw/id/:id',async function(req,res,next){
 
 router.patch('/withdraw/id/:id',async function(req,res,next){})
 
+//READ TRANSACTIONS
 router.get('/readTransactions/id/:id',async function(req,res,next){
     const id = req.params.id
     const readTransactions = await transactionOperations.readTransactions(id)

@@ -68,7 +68,6 @@ async function withdraw(id,amount){
             throw new DefaultError("insufficient balance")
         }
 
-        user.balance = user.balance - amount
         await userOperations.updateUser(user)
         await transferData(id, id, "WITHDRAW", amount)
         return userOperations.getUser(id)

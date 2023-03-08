@@ -2,7 +2,7 @@ const mysql = require('mysql2/promise');
 const InternalError = require('../errors/InternalError')
 
 
-async function  CreateConnection() {
+async function CreateConnection() {
     try {
         const connection = await mysql.createConnection({
             host: 'localhost',
@@ -13,6 +13,7 @@ async function  CreateConnection() {
         return connection
     } catch (e) {
         throw new InternalError("Db failed")
+        console.log(e)
     }
 }
 

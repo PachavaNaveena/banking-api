@@ -10,13 +10,14 @@ const isValidUser = async (req, res, next) => {
             message: "Missing authorization token"
         })
     }
-    const validUser = await isTokenValid(req.headers.authorization)
+    const validUser = await isTokenValid(req.headers.authorization)//we get here email,id of user
     if (!validUser) {
         return res.status(401).json({
             message: "Invalid user"
         })
     } else {
         req.id = validUser.id
+        req.email = validUser.email
     }
     next()
 }

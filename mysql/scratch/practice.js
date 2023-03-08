@@ -1,8 +1,10 @@
 const transactionOperations = require("../services/transaction");
 const moment = require("moment");
+const e = require("express");
 let arr = [{num:10,class:'ero'},{num:20, class:'zym'} ,{num:30,class:'zumba'},{num:40,class:''}]
 let arr2 = {FN:'naveena',LN:'pachava',city:'ongole',mobile:'23456789'}
 let arr3 = {FN:'bhavana',LN:'pachava',city:'ongole',mobile:'23456789'}
+let pen = []
 
 let user =  [
     { email: 'abhi@' },
@@ -66,4 +68,37 @@ function y(){
 
 //console.log(moment().toISOString())
 
-console.log(array[0].firstname)
+//console.log(!!array[0].firstname)
+function division(x,num){
+try {
+    if(num==0){
+     throw "pass another number except 0"
+    }
+    return x/num
+} catch (e){
+    console.error(e.toString())
+    return false
+}
+}
+
+//console.log(division(40,0))
+let x = "        naveena pachava"
+// console.log(x.trim())
+
+function print(x){
+    if(x%2 ==0){
+        return "even"
+    }
+    else{
+        return x
+    }
+
+}
+//console.log(print(-3))
+function pencle(){
+    if(true){
+        console.log(pen)
+    }else
+        console.log(pen[0])
+}
+pencle()

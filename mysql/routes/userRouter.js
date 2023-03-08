@@ -7,54 +7,56 @@ const publicRouter = Router()
 
 //---------ADD USER
 publicRouter.post('/',async function(req,res,next){
-    const body = req.body
+    try{
+        const body = req.body
+        // const requiredFields = ['firstname', 'lastname', 'email', 'address1', 'address2', 'city', 'state', 'zipcode','password']
+        // const givenFields = Object.keys(body)
+        // const missing = []
+        // requiredFields.forEach(function (value){
+        //     if(givenFields.indexOf(value) == -1)
+        //         missing.push(value)
+        // })
+        // if(missing.length > 0)
+        //     res.status(400).send({message:"missing required fields are "+missing.join(",")})
 
-    const requiredFields = ['firstname', 'lastname', 'email', 'address1', 'address2', 'city', 'state', 'zipcode']
-    const givenFields = Object.keys(body)
-    const missing = []
-    requiredFields.forEach(function (value){
-        if(givenFields.indexOf(value) == -1)
-            missing.push(value)
-    })
-    if(missing.length > 0)
-        res.status(400).send({message:"missing required fields are "+missing.join(",")})
-    const adduser = await userOperations.addUser(body)
-    if(adduser == "same_email")
-        res.status(400).send({message:"email "+body.email+" alredy in use"})
-    else{
-        res.status(200).json(adduser)
+        const user = await userOperations.addUser(body)
+        res.status(200).json(user)
+
+        // if(adduser == "same_email")
+        //     res.status(400).send({message:"email "+body.email+" alredy in use"})
+        // else{
+        //     res.status(200).json(adduser)
+        // }
+    }catch (e) {
+        next (e)
     }
 })
 
-//----Login
+//---------GET USERS
 privateRouter.get('/list',  async function (req,res,next){
-    const users = await userOperations.getUsers()
-    if(users == null)
-        res.send({message:"empty user list"})
-    else
+    try{
+        const users = await userOperations.getUsers()
         res.send(users)
+    }catch (e) {
+        next (e)
+    }
 })
 
-//--------GET USER
-privateRouter.get('/id/:id' ,async function(req,res,next){
-    const id = req.params.id
-    const user = await userOperations.getUser(id)
-    if(user == null)
-        res.status(400).send({message:"user with id : "+id+" dosent exist"})
-    else
-        res.send(user)
-})
+
+//---------GET USER
 privateRouter.get('/' ,async function(req,res,next){
     try {
         const id = req.id
         const user = await userOperations.getUser(id)
-        if (user == null) {
-            res.status(400).send({message: "user with id : " + id + " dosent exist"})
-        } else {
-            res.send(user)
-        }
+        // if (user == null) {
+        //     res.status(400).send({message: "user with id : " + id + " dosent exist"})
+        // } else {
+        //     res.send(user)
+        // }
+        res.send(user)
     } catch (e) {
-        next(e)
+        console.error(e.toString())
+        next(e)                                               // prints the caught error in the postmen
     }
 })
 
