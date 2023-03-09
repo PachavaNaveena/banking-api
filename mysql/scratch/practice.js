@@ -96,9 +96,17 @@ function print(x){
 }
 //console.log(print(-3))
 function pencle(){
-    if(true){
+    if(false){
         console.log(pen)
     }else
-        console.log(pen[0])
+        console.log(!pen[0])
 }
-pencle()
+//pencle()
+
+function car(num){
+    if(num>0)
+        return arr
+    else
+        return pen
+}
+console.log(!car(0))

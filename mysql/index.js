@@ -23,8 +23,9 @@ app.get('/db/status', async (req, res, next) => {
     })
 })
 
-app.use((error, req, res, next) => {             //this is for what function??????
+app.use((error, req, res, next) => {             //this is for what function?????? printing the internal server errors for all the functions & next(e) will take out the program where the path started mean mysql/index.js
     const status = error.status || 500
+    console.log(status)
     res.status(status).json({
         message: error.toString()
     })
