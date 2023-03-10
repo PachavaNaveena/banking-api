@@ -48,8 +48,6 @@ router.patch('/withdraw',async function(req,res,next){
     }
 })
 
-//router.patch('/withdraw/id/:id',async function(req,res,next){})
-
 //READ TRANSACTIONS
 router.get('/readTransactions/id/:id',async function(req,res,next){
     const id = req.params.id
