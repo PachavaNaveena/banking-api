@@ -5,6 +5,7 @@ const {v4} = require("uuid");
 const {getUser} = require("./user");
 const InvalidDataError = require("../errors/InvalidDataError")
 const DefaultError = require("../errors/DefaultError")
+const {getCurrentDate} = require("../utils/util");
 
 async function deposit(id,amount){
    let user = await userOperations.getUser(id)
@@ -27,50 +28,46 @@ async function deposit(id,amount){
 }
 
 async function transfer(fromID,toID,amount){
-    let fromUser = await userOperations.getUser(fromID)
-    let toUser = await  userOperations.getUser(toID)
-
-    if(!fromUser)
-        return "no_fromUser"
-    else if(!toUser)
-        return "no_toUser"
-    if(amount < 1 || amount >100000)
-        return "false_amount"
-    if (fromUser.balance < amount){
-        console.log("insufficient balance" + fromUser.balance)
-        return "inn_bal"
+    try{
+        let fromUser = await userOperations.getUser(fromID)
+        let toUser = await  userOperations.getUser(toID)
+        if(!toUser)
+            throw new InvalidDataError(`To account ID dosent exist ${toID}`)
+        if(amount < 1 || amount >100000)
+            throw new InvalidDataError(`amount ${amount}`)
+        if (fromUser.balance < amount){
+            throw new DefaultError(`insufficient balance ${fromUser.balance}`)
+        }
+        fromUser.balance = fromUser.balance - amount
+        toUser.balance = toUser.balance + amount
+        let user = [fromUser,toUser]
+        let id = [fromID,toID]
+        let array = []
+        for(let i=0;i<user.length;i++) {
+            await userOperations.updateUser(user[i])
+            array.push(await userOperations.getUser(id[i]))
+        }
+        await transferData(fromID,toID,"TRANSFER",amount)
+        return array
+    }catch (e) {
+        console.log(e.toString())
+        throw e
     }
-
-    fromUser.balance = fromUser.balance-amount
-    toUser.balance = toUser.balance+amount
-
-    let user = [fromUser,toUser]
-    let id = [fromID,toID]
-    let array = []
-    for(let i=0;i<user.length;i++) {
-        await userOperations.updateUser(user[i])
-        array.push(await userOperations.getUser(id[i]))
-    }
-    await transferData(fromID,toID,"TRANSFER",amount)
-    return array
 }
 
 async function withdraw(id,amount){
     try {
         let user = await userOperations.getUser(id)
-        // if (!user) {
-        //     throw new DefaultError("User does not exist") //we can remove because we aleady validated user
-        // }
-        if (amount < 0 || amount > 100000) {
-            throw new InvalidDataError("amount")
+        if (amount < 1 || amount > 100000) {
+            throw new InvalidDataError(`amount ${amount}`)
         }
         if (user.balance < amount) {
-            throw new DefaultError("insufficient balance")
+            throw new DefaultError(`insufficient balance ${user.balance}`)
         }
         user.balance = user.balance - amount
-        await userOperations.updateUser(user)
+        const result = await userOperations.updateUser(user)
         await transferData(id, id, "WITHDRAW", amount)
-        return userOperations.getUser(id)
+        return result
     } catch (e) {
         console.error("Error:  withdraw: " + e.toString());
         throw e
@@ -88,9 +85,14 @@ async function readTransactions(id){
 }
 
 async function transferData(fromAccount,toAccount,type,amount){
-    let connection = await connectionOps.CreateConnection()
-    let query = "INSERT INTO `bank`.`tranactions` (`transaction-id`, `type`, `from account`, `to account`, `amount`, `date`) VALUES ('"+v4()+"', '"+type+"', '"+fromAccount+"', '"+toAccount+"', '"+amount+"', '"+new Date().toJSON().slice(0,18)+"');"
-    let[rows,fields] = await connection.execute(query);
+    try{
+        let connection = await connectionOps.CreateConnection()
+        let query = "INSERT INTO `bank`.`tranactions` (`transaction-id`, `type`, `from account`, `to account`, `amount`, `date`) VALUES ('"+v4()+"', '"+type+"', '"+fromAccount+"', '"+toAccount+"', '"+amount+"', '"+getCurrentDate()+"');"
+        let[rows,fields] = await connection.execute(query);
+    }catch (e) {
+        console.log(e.toString())
+        return false
+    }
 }
 
 

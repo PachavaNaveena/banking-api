@@ -35,7 +35,7 @@ privateRouter.get('/' ,async function(req,res,next){
         res.send(user)
     } catch (e) {
         console.error(e.toString())
-        next(e)                                               // takes the error to the app.use(error) function
+        next(e)                                               // takes the error to the app.use(error) function how???????/
     }
 })
 

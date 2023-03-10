@@ -94,6 +94,9 @@ async function getUsers(){
 
 async function email_check(email, id = '') {
     try{
+        if(email.split(" ").length === 2){
+            throw new InvalidDataError(`email ${email} incorrect format`)
+        }
         let connection = await connectionOps.CreateConnection()
         let email_query = "SELECT email FROM `bank`.`users` where email = '"+ email +"'"
         let [email_rows] = await connection.execute(email_query)
@@ -122,8 +125,8 @@ async function password_check(password){
 
 const login = async (email, password) => {
     try {
-        let connection = await connectionOps.CreateConnection()
         email = email.trim()
+        let connection = await connectionOps.CreateConnection()
         let query = `SELECT email, id FROM bank.users where TRIM(email) = '${email}' and password = '${password}'`
         const [data] = await connection.query(query);
         return data[0]
@@ -140,12 +143,10 @@ const isTokenValid = async (authorization) => {
         if (authorization.length === 2) {
             auth = atob(authorization[1])
             auth = auth.split(":")
-
             return login(auth[0], auth[1])
         }
-       // return false
     } catch (e) {
-        console.error(e)
+        console.error(e.toString())
         return false
     }
 }

@@ -109,4 +109,4 @@ function car(num){
     else
         return pen
 }
-console.log(!car(0))
+//console.log(!car(0))
