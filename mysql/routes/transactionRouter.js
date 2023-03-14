@@ -7,17 +7,17 @@ const router = Router()
 //------------------------------------------------TRANSACTION OPERATIONS------------------------------------------------
 
 //----------DEPOSIT
-router.patch('/deposit/id/:id',async function(req,res,next){
-    const id = req.params.id
-    const body = req.body
-    const amount = body.amount
-    let result = await transactionOperations.deposit(id,amount)
-    if(result == "no_user")
-        res.status(400).send({message:"user dosent exist with id "+id})
-    else if(result == "false_amount")
-        res.status(400).send({message:"provide amount between 1 to 100000"})
-    else
+router.patch('/deposit',async function(req,res,next){
+    try{
+        const id = req.id
+        const body = req.body
+        const amount = body.amount
+        let result = await transactionOperations.deposit(id,amount)
         res.status(200).json({message: `successfully deposited & user ID: ${result.id} with current balance ${result.balance}`})
+    }catch (e) {
+     console.log(e.toString())
+     next(e)
+    }
 })
 
 //----------TRANSFER
@@ -49,13 +49,21 @@ router.patch('/withdraw',async function(req,res,next){
 })
 
 //READ TRANSACTIONS
-router.get('/readTransactions/id/:id',async function(req,res,next){
-    const id = req.params.id
-    const readTransactions = await transactionOperations.readTransactions(id)
-    if(readTransactions == false)
-        res.status(400).send({message:"user dosent exist / No transfers with id "+id})
-    else
-        res.send(readTransactions)
+router.get('/',async function(req,res,next){
+    try{
+        const id = req.id
+        const result = await transactionOperations.readTransactions(id)
+        if(!result.length){
+            res.status(400).json({message:`no transactions with ID:${id}`})
+        }
+        else{
+            res.send(result)
+        }
+    }catch (e) {
+        console.log(e.toString())
+        next(e)
+    }
+
 })
 
 module.exports = router

@@ -8,18 +8,6 @@ const MissingDataError = require("../errors/MissingDataError");
 
 async function addUser(user){
     try{
-        const requiredFields = ['firstname', 'lastname', 'email', 'address1', 'address2', 'city', 'state', 'zipcode','password']
-        const givenFields = Object.keys(user)
-        const missing = []
-        requiredFields.forEach(function (value){
-            if(givenFields.indexOf(value) == -1)
-                missing.push(value)
-        })
-        if(missing.length > 0){
-            throw new MissingDataError(missing.join(','))
-        }
-        await email_check(user.email)
-        await password_check(user.password)
         const id = v4();
         const currentDate = getCurrentDate();
         let connection = await  connectionOps.CreateConnection()
@@ -64,7 +52,7 @@ async function getUser(id){
 async function searchUser(name){
     try{
         let connection = await connectionOps.CreateConnection()
-        let query = "select id,firstname,lastname,email,address1,address2,city,state,zipcode from `bank`.`users` where firstname = '"+name+"' || lastname = '"+name+"';"
+        let query = "select id,firstname,lastname,email,address1,address2,city,state,zipcode from `bank`.`users` where firstname = '"+name+"' || lastname = '"+name+"' order by firstname ASC;"
         let[rows, fields] = await connection.execute(query);
         if(!rows[0]){
             throw new DefaultError(`user doset exist with name : ${name}`)
@@ -80,7 +68,7 @@ async function searchUser(name){
 async function getUsers(){
     try{
         let connection = await connectionOps.CreateConnection()
-        let query = "SELECT * FROM `bank`.`users`;"
+        let query = "SELECT * FROM `bank`.`users` order by lastname ASC;"
         let[rows, fields] = await connection.execute(query);
         if(!rows){
             throw new DefaultError("empty users list")
@@ -94,8 +82,8 @@ async function getUsers(){
 
 async function email_check(email, id = '') {
     try{
-        if(email.split(" ").length === 2){
-            throw new InvalidDataError(`email ${email} incorrect format`)
+        if(email.split(" ").length === 2 || email[email.length-1]!='@'){
+            throw new InvalidDataError(`email:${email} incorrect format`)
         }
         let connection = await connectionOps.CreateConnection()
         let email_query = "SELECT email FROM `bank`.`users` where email = '"+ email +"'"
@@ -116,6 +104,9 @@ async function password_check(password){
         console.log(pass)
         if(pass.length === 2){
             throw new InvalidDataError("password")
+        }
+        if(password.length<5 || password.length>20){
+            throw new InvalidDataError(`password:${password} should be 6 to 20 characters`)
         }
     }catch (e) {
         console.log(e.toString())

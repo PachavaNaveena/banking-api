@@ -110,3 +110,6 @@ function car(num){
         return pen
 }
 //console.log(!car(0))
+
+let U = 'naveena'
+console.log(U[U.length-1])

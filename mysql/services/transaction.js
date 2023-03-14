@@ -8,23 +8,19 @@ const DefaultError = require("../errors/DefaultError")
 const {getCurrentDate} = require("../utils/util");
 
 async function deposit(id,amount){
-   let user = await userOperations.getUser(id)
-    if(!user)
-        return "no_user"
-    if(amount < 1 || amount >100000)
-        return "false_amount"
-
-    user.balance = user.balance + amount
-    await userOperations.updateUser(user)
-    console.log("successfully deposited")
-
-    /* ALTERNATE WAY
-    let connection = await connectionOps.CreateConnection()
-    let query = "UPDATE `bank`.`users` SET `balance` = '"+user.balance+"',`updateddate` = '"+new Date().toJSON().slice(0,18)+"' WHERE (`id` = '"+id+"');"
-    let [rows,fields2] = await connection.execute(query); */
-
-    await transferData(id,id,"DEPOSIT",amount)
-    return userOperations.getUser(id)
+    try{
+        let user = await userOperations.getUser(id)
+        if(amount < 1 || amount >100000){
+            throw new InvalidDataError(`amount ${amount}`)
+        }
+        user.balance = user.balance + amount
+        const result = await userOperations.updateUser(user)
+        await transferData(id,id,"DEPOSIT",amount)
+        return result
+    }catch (e) {
+        console.log("Error: Transfer: " + e.toString())
+        throw e
+    }
 }
 
 async function transfer(fromID,toID,amount){
@@ -50,7 +46,7 @@ async function transfer(fromID,toID,amount){
         await transferData(fromID,toID,"TRANSFER",amount)
         return array
     }catch (e) {
-        console.log(e.toString())
+        console.log("Error: Transfer: " + e.toString())
         throw e
     }
 }
@@ -75,13 +71,15 @@ async function withdraw(id,amount){
 }
 
 async function readTransactions(id){
-    let user = await userOperations.getUser(id)
-    if(!user)
-        return false
-    let connection = await connectionOps.CreateConnection()
-    let query = "SELECT * FROM `bank`.`tranactions` WHERE `from account`="+id+" || `to account`="+id+";"
-    let [rows,fields] = await connection.execute(query);
-    return rows
+    try{
+        let connection = await connectionOps.CreateConnection()
+        let query = "SELECT * FROM `bank`.`tranactions` WHERE `from account`='"+id+"' || `to account`='"+id+"' ORDER BY date DESC;"
+        let [rows,fields] = await connection.execute(query);
+        return rows
+    }catch (e) {
+     console.log("Error:  withdraw: " + e.toString())
+        throw e
+    }
 }
 
 async function transferData(fromAccount,toAccount,type,amount){
@@ -94,7 +92,6 @@ async function transferData(fromAccount,toAccount,type,amount){
         return false
     }
 }
-
 
 module.exports = {
     deposit,

@@ -1,6 +1,7 @@
 const {Router} = require('express')
 const userOperations = require("../services/user");
 const transactionOperations = require("../services/transaction");
+const MissingDataError = require("../errors/MissingDataError");
 
 const privateRouter = Router()
 const publicRouter = Router()
@@ -9,6 +10,18 @@ const publicRouter = Router()
 publicRouter.post('/',async function(req,res,next){
     try{
         const body = req.body
+        const requiredFields = ['firstname', 'lastname', 'email', 'address1', 'address2', 'city', 'state', 'zipcode','password']
+        const givenFields = Object.keys(body)
+        const missing = []
+        requiredFields.forEach(function (value){
+            if(givenFields.indexOf(value) == -1)
+                missing.push(value)
+        })
+        if(missing.length > 0){
+            throw new MissingDataError(missing.join(','))
+        }
+        await userOperations.email_check(body.email)
+        await userOperations.password_check(body.password)
         const user = await userOperations.addUser(body)
         res.status(200).json(user)
     }catch (e) {
@@ -35,7 +48,7 @@ privateRouter.get('/' ,async function(req,res,next){
         res.send(user)
     } catch (e) {
         console.error(e.toString())
-        next(e)                                               // takes the error to the app.use(error) function how???????/
+        next(e)                                               // takes the error to the app.use(error) function  how???????/
     }
 })
 
