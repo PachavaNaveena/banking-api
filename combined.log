@@ -1,0 +1,6 @@
+{"level":"http","message":"URL: /db/status, METHOD: GET, BODY: {}"}
+2023-03-17 20:06:03 http: URL: /db/status, METHOD: GET, BODY: {}
+2023-03-17 20:07:01 http: URL: /db/status, METHOD: GET, BODY: {}
+2023-03-17 20:19:28 http: URL: /user/list, METHOD: GET, BODY: {}
+2023-03-17 20:19:42 http: URL: /user/list, METHOD: GET, BODY: {}
+2023-03-17 20:21:38 http: URL: /user/list, METHOD: GET, BODY: {}
