@@ -20,20 +20,37 @@ publicRouter.post('/',async function(req,res,next){
         if(missing.length > 0){
             throw new MissingDataError(missing.join(','))
         }
+
+        userOperations.password_check(body.password)
         await userOperations.email_check(body.email)
-        await userOperations.password_check(body.password)
         const user = await userOperations.addUser(body)
         res.status(200).json(user)
     }catch (e) {
-        next (e)
+        next(e)
     }
 })
 
 //---------GET USERS
 privateRouter.get('/list',  async function (req,res,next){
     try{
-        const users = await userOperations.getUsers()
-        res.send(users)
+        const action = new Promise((resolve, reject) => {
+            userOperations.getUsers1((err, result) => {
+                if (err) {
+                    return reject(err)
+                }
+                resolve(result)
+            })
+        })
+
+        action.then((result) => {
+
+        }).catch(e =>{
+
+        })
+
+        const data = await action;
+        res.send(data)
+
     }catch (e) {
         next (e)
     }

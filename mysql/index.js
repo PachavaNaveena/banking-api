@@ -4,10 +4,16 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const {isDBActive} = require("./db/connection");
 const routes = require('./routes')
+const logger = require('./utils/logger');
+const config = require('./config')
 
 const app = express()
 
 app.use(bodyParser.json({limit: '2mb', type: '*/json'}))
+app.use( (req, res, next) => {
+    logger.http(`URL: ${req.url}, METHOD: ${req.method}, BODY: ${JSON.stringify(req.body)}`);
+    next()
+})
 app.use('/', routes)
 
 //DATABASE STATUS
@@ -31,6 +37,7 @@ app.use((error, req, res, next) => {             //this is for what function????
     })
 })
 
-app.listen(6000, function() {
-    console.log("App running on http://localhost:6000")
+const PORT = config.APP_PORT || 6000
+app.listen(PORT, function() {
+    console.log("App running on http://localhost:"+ PORT)
 })

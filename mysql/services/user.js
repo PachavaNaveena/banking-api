@@ -79,6 +79,20 @@ async function getUsers(){
         throw e
     }
 }
+async function getUsers1(callback){
+    try{
+        let connection = await connectionOps.CreateConnection()
+        let query = "SELECT * FROM `bank`.`users` order by lastname ASC;"
+        let[rows, fields] = await connection.execute(query);
+        if (!rows) {
+            return callback(new DefaultError("empty users list"))
+        }
+        callback(null, rows)
+    }catch (e){
+        console.error(e.toString())
+        throw e
+    }
+}
 
 async function email_check(email, id = '') {
     try{
@@ -98,7 +112,7 @@ async function email_check(email, id = '') {
     }
 }
 
-async function password_check(password){
+function password_check(password){
     try{
         const pass = password.split(" ")
         console.log(pass)
@@ -148,6 +162,7 @@ module.exports = {
     getUser: getUser,
     searchUser: searchUser,
     getUsers: getUsers,
+    getUsers1: getUsers1,
     isTokenValid,
     email_check,
     password_check

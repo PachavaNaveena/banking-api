@@ -1,7 +1,7 @@
 {
   "name": "bankingwithtxtdb",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is a nodejs app that performs simple banking operations using text files as DB",
   "main": "index.js",
   "scripts": {
     "start:mysql": "nodemon --inspect ./mysql/index.js",
@@ -22,13 +22,16 @@
     "atob": "^2.1.2",
     "body-parser": "^1.20.1",
     "btoa": "^1.2.1",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
     "moment-timezone": "^0.5.40",
     "mysql2": "^3.1.0",
-    "uuidv4": "^6.2.13"
+    "uuidv4": "^6.2.13",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
-  }
+  },
+  "keywords": []
 }

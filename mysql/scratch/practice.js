@@ -1,10 +1,13 @@
 const transactionOperations = require("../services/transaction");
 const moment = require("moment");
 const e = require("express");
+const {promises} = require("fs");
 let arr = [{num:10,class:'ero'},{num:20, class:'zym'} ,{num:30,class:'zumba'},{num:40,class:''}]
 let arr2 = {FN:'naveena',LN:'pachava',city:'ongole',mobile:'23456789'}
 let arr3 = {FN:'bhavana',LN:'pachava',city:'ongole',mobile:'23456789'}
 let pen = []
+let names =['naveena','bhavana','chaitanya','sarath']
+
 
 let user =  [
     { email: 'abhi@' },
@@ -112,4 +115,13 @@ function car(num){
 //console.log(!car(0))
 
 let U = 'naveena'
-console.log(U[U.length-1])
+//console.log(U[U.length-1])
+
+const c = names.forEach((name) => {
+    let k = name +" ok"
+    console.log(name.toString())
+   return k
+})
+// console.log(c)
+// console.log(names)
+
