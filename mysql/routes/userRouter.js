@@ -1,6 +1,5 @@
 const {Router} = require('express')
 const userOperations = require("../services/user");
-const transactionOperations = require("../services/transaction");
 const MissingDataError = require("../errors/MissingDataError");
 
 const privateRouter = Router()
@@ -20,9 +19,8 @@ publicRouter.post('/',async function(req,res,next){
         if(missing.length > 0){
             throw new MissingDataError(missing.join(','))
         }
-
-        userOperations.password_check(body.password)
         await userOperations.email_check(body.email)
+        userOperations.password_check(body.password)
         const user = await userOperations.addUser(body)
         res.status(200).json(user)
     }catch (e) {
@@ -32,6 +30,17 @@ publicRouter.post('/',async function(req,res,next){
 
 //---------GET USERS
 privateRouter.get('/list',  async function (req,res,next){
+    try{
+        const users = await userOperations.getUsers()
+        res.json(users)
+    }catch (e) {
+        console.log(e.toString())
+        next(e)
+    }
+})
+
+//---------GET USER (USING PROMISE)
+/* privateRouter.get('/list',  async function (req,res,next){
     try{
         const action = new Promise((resolve, reject) => {
             userOperations.getUsers1((err, result) => {
@@ -55,7 +64,7 @@ privateRouter.get('/list',  async function (req,res,next){
         next (e)
     }
 })
-
+*/
 
 //---------GET USER
 privateRouter.get('/' ,async function(req,res,next){
@@ -84,7 +93,7 @@ privateRouter.put('/',async function(req,res,next){
             }
         }
         await userOperations.email_check(user.email)
-        await userOperations.password_check(user.password)
+        userOperations.password_check(user.password)
         let result = await userOperations.updateUser(user)
         res.send(result)
     }catch (e) {

@@ -117,11 +117,37 @@ function car(num){
 let U = 'naveena'
 //console.log(U[U.length-1])
 
-const c = names.forEach((name) => {
-    let k = name +" ok"
-    console.log(name.toString())
-   return k
-})
-// console.log(c)
-// console.log(names)
+// //const c =
+//     names.map((name) => {
+//     let k = name +" ok"
+//     //console.log(k.toString())
+//    return k
+// })
 
+//console.log(c)
+ //console.log(names)
+
+
+// gmail check using search() operator
+const emailvalid = (e) => {
+    e = e.trim()
+    let i = (e.search(/@gmail.com/)) // here we can use either '@gmail.com'
+    if(i === -1 || e.split(' ').length > 1 || e[i+10] != undefined){
+        console.log('invalid email')
+        return false
+    }
+    console.log('valid email')
+}
+emailvalid(' naveena@gmail. com ')
+
+
+// Gmail check using includes() operation
+const email = (e) =>{
+    e = e.trim()
+    let i = e.includes('@gmail.com', e.length-10)
+    if(i == false || e.split(' ').length > 1)
+        console.log('invalid email')
+    else
+        console.log('valid email')
+}
+email('naveena@gmail.com')

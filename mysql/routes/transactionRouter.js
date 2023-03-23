@@ -1,5 +1,4 @@
 const {Router} = require('express')
-const userOperations = require("../services/user");
 const transactionOperations = require("../services/transaction");
 
 const router = Router()
