@@ -1,14 +1,14 @@
 const mysql = require('mysql2/promise');
 const InternalError = require('../errors/InternalError')
-
+const config = require('../config')
 
 async function CreateConnection() {
     try {
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            database: 'bank',
-            password: 'Naveena9@'
+            host: config.DB_HOST_NAME,
+            user: config.DB_HOST_USERNAME,
+            database: config.DB_NAME,
+            password: config.DB_PASSWORD
         });
         return connection
     } catch (e) {

@@ -79,10 +79,29 @@ async function getUsers(){
         throw e
     }
 }
+/*
+async function getUsers1(callback){
+    try{
+        let connection = await connectionOps.CreateConnection()
+        let query = "SELECT * FROM `bank`.`users` order by lastname ASC;"
+        let[rows, fields] = await connection.execute(query);
+        if (!rows) {
+            return callback(new DefaultError("empty users list"))
+        }
+        callback(null, rows)
+    }catch (e){
+        console.error(e.toString())
+        throw e
+    }
+}
+*/
+
 
 async function email_check(email, id = '') {
     try{
-        if(email.split(" ").length === 2 || email[email.length-1]!='@'){
+        email = email.trim()
+        let i = email.includes('@gmail.com', email.length-10)
+        if(i == false || email.split(' ').length > 1){
             throw new InvalidDataError(`email:${email} incorrect format`)
         }
         let connection = await connectionOps.CreateConnection()
@@ -98,11 +117,11 @@ async function email_check(email, id = '') {
     }
 }
 
-async function password_check(password){
+function password_check(password){
     try{
         const pass = password.split(" ")
         console.log(pass)
-        if(pass.length === 2){
+        if(pass.length > 1){
             throw new InvalidDataError("password")
         }
         if(password.length<5 || password.length>20){
@@ -148,6 +167,7 @@ module.exports = {
     getUser: getUser,
     searchUser: searchUser,
     getUsers: getUsers,
+    //getUsers1: getUsers1,
     isTokenValid,
     email_check,
     password_check
