@@ -119,9 +119,8 @@ async function email_check(email, id = '') {
 
 function password_check(password){
     try{
-        const pass = password.split(" ")
-        console.log(pass)
-        if(pass.length > 1){
+        let j = password.includes(' ')
+        if( j == true){                                  // password.split(" ").length > 1 ||
             throw new InvalidDataError("password")
         }
         if(password.length<5 || password.length>20){

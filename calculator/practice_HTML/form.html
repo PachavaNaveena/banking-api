@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FORMS</title>
+</head>
+<body>
+<form>
+  <h3>ENTER DETAILS(TEXT FIELD)</h3>
+  <label for="fname">First name:</label>
+  <input type="text" id="fname" name="fname" value="naveena"><br>
+  <label for="lname">Last name:</label>
+  <input type="text" id="lname" name="lname" value="pachava">
+  <input type="submit" id="sub">
+</form>
+
+<form>
+  <h3>select one language(RADIO BUTTON)</h3>
+  <input type="radio" id="html" name="lang" value="html">
+  <label for="html">HTML</label><br>
+  <input type="radio" id="css" name="lang" value="css">
+  <label for="css">CSS</label><br>
+  <input type="radio" id="c++" name="lang" value="c++">
+  <label for="c++">C++</label>
+</form>
+
+<form>
+  <h3>CHECK BOX</h3>
+  <input type="checkbox" id="v1" name="v1" value="car">
+  <label for="v1">I have car</label><br>
+  <input type="checkbox" id="v2" name="v2" value="bike">
+  <label for="v2">I have bike</label><br>
+  <input type="checkbox" id="v3" name="v3" value="cycle">
+  <label for="v3">I have cycle</label>
+</form>
+
+  <form action="learning.html" target="_blank" method="post">
+    <h3>SUBMIT</h3>
+    <label for="num">Ph Number</label>
+    <input type="text" id="num" name="num" value="345678">
+    <input type="submit" value="submit">
+  </form>
+
+  <form>
+    <h3>HTML Form Element (SELECT)</h3> <!-- The <select> element defines a drop-down list:, -->
+    <label for="car">select car</label>
+       <select id="car" name="car" size="3" multiple> <!--Use the size attribute to specify the number of visible values:-->
+        <option value="volvo">volvo</option> <!-- The <option> elements defines an option that can be selected.-->
+        <option value="benz">benz</option>
+        <option value="honda" selected>honda</option> <!-- To define a pre-selected option, add the selected attribute to the option:-->
+         <option value="suzuki">suzuki</option>
+       </select>
+    <button type="submit">submit</button>
+  </form>
+
+  <form>
+    <h3>TEXT AREA</h3>
+    <textarea name="message" rows="10" cols="10">qwertyuiopasdfghjklZxcvbnm</textarea><br>
+    <input type="submit">
+  </form>
+
+  <h3>BUTTON ELEMENT</h3>
+  <input type="button" onclick="alert('Hellow world')">
+  <button type="button" onclick="alert('hello world')">click me</button>
+  <button type="submit" >submit</button>
+
+<form>
+  <fieldset> <!--The fieldset element is used to group related data in a form, and the legend element defines a caption for the fieldset element.-->
+    <legend>PERSONAL INFO</legend>
+    <label for="f-name">First Name</label>
+    <input type="text" id="f-name" name="Fname" value="naveena">
+    <label for="l-name">Last Name</label>
+    <input type="text" id="l-name" name="Lname" value="pachava">
+    <input type="submit">
+  </fieldset>
+</form>
+
+<form>
+  <h3>DATA LIST</h3>
+  <label>Select Car</label>
+  <input list="cars" name="car">
+  <datalist id="cars">
+    <option value="volvo">volvo</option>
+    <option value="benz">benz</option>
+    <option value="honda" selected>honda</option>
+    <option value="suzuki">suzuki</option>
+  </datalist>
+  <input type="submit">
+</form>
+
+
+
+</body>
+</html>

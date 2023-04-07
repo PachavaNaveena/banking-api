@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" >
+    <title>CALCULATOR APP USING BASIC HTML, JAVA SCRIPT</title>
+    <link rel="stylesheet" href="practicestylesheet.css">
+   <!-- <style>
+        body {background-color: powderblue;}
+        h1   {color: blue;}
+        p    {color: red;}
+    </style> -->
+</head>
+<body>
+<h1 id="CAL">CALCULATOR</h1>
+<button onclick="myFunction()">hide h1</button>
+<button onclick="h1()">change h1</button>
+<h1 class="head">This is heading 1</h1>
+<h2>This is heading 2</h2>
+<h3 style="color:red;font-size:10vw;">This is heading 3</h3>
+<h4 class="head">This is heading 1</h4>
+<h5 style="border:2vw solid Tomato;" >This is heading 2</h5>
+<h6>This is heading 3</h6><hr>
+<p>This is a paragraph.</p>
+<p title="iam a tool tip" > This is another paragraph.</p>
+<p>rsetdyfughijokpl[etryftuygihojkpl[tfyuio</p>
+<pre style="background-color:powderblue;font-family:'Academy Engraved LET';text-align: center" >the preformetting it displays,
+    as it is in the pre tag</pre>
+sedtrfyguhijokplesrdtfyguhijokpl<br>
+<a href="https://unsplash.com/photos/EgtLW0teNyg">This is a link</a>
+<img src="https://unsplash.com/photos/EgtLW0teNyg" alt="baby photo" width="104" height="142"> <br>
+<a href="#CAL"> take to calculator </a> <br> <!-- here this is creating a bookmark, it can be useful if a web page is very long,
+When the link is clicked, the page will scroll down or up to the location with the bookmark -->
+<a href="html_demo.html#CAL" target="_blank">Jump to Chapter 4</a> <!-- You can also add a link to a bookmark on another page:-->
+<img scr="/Users/naveenapachava/downloads/ IMG_0677.jpeg" alt="god photo">
+
+</body>
+</html>
+
+<script>
+    function myFunction() {
+        let x = document.getElementsByClassName("head");
+        // x.map(()=>{
+        //     return x.style.display ="none";
+        // })}
+        for (let i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+        }
+    function h1(){let y = document.getElementById("CAL").innerHTML = "Have a nice day!"}
+
+</script>
