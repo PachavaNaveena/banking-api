@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="device-width, initial-scale=1">
+    <link rel="stylesheet" href="cal_style.css">
+    <title>Calculator APP</title>
+</head>
+<body>
+<h1>Calculator App</h1><br>
+<table class="calc">
+    <tr>
+        <td colspan="4"><input class="display" type="text" value="0" disabled></td>
+    </tr>
+    <tr>
+        <td><input type="button" value="1" onclick="onButtonClick('1')"></td>
+        <td><input type="button" value="2" onclick="onButtonClick('2')"></td>
+        <td><input type="button" value="3" onclick="onButtonClick('3')"></td>
+        <td><input type="button" value="+" onclick="onButtonClick('+')"></td>
+    </tr>
+    <tr>
+        <td><input type="button" value="4" onclick="onButtonClick('4')"></td>
+        <td><input type="button" value="5" onclick="onButtonClick('5')"></td>
+        <td><input type="button" value="6" onclick="onButtonClick('6')"></td>
+        <td><input type="button" value="-" onclick="onButtonClick('-')"></td>
+    </tr>
+    <tr>
+        <td><input type="button" value="7" onclick="onButtonClick('7')"></td>
+        <td><input type="button" value="8" onclick="onButtonClick('8')"></td>
+        <td><input type="button" value="9" onclick="onButtonClick('9')"></td>
+        <td><input type="button" value="*" onclick="onButtonClick('*')"></td>
+    </tr>
+    <tr>
+        <td><input type="button" value="AC" onclick="clearscreen()"></td>
+        <td><input type="button" value="0" onclick="onButtonClick('0')"></td>
+        <td><input type="button" value="=" onclick="calculate()"></td>
+        <td><input type="button" value="/" onclick="onButtonClick('/')"></td>
+    </tr>
+</table>
+<script src="script.js" defer></script>
+</body>
+</html>

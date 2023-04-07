@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewpoint" content="width=device-width, initial-scale=1.0">
+    <title>Example: resize the browser window to see that the three div elements
+      below will display horizontally on large screens and stack vertically on small screens:</title>
+  <style>
+    *{
+      box-sizing: border-box;
+    }
+    .left{
+      background-color: powderblue;
+      float: left;
+      padding: 20px;
+      width: 25%;
+    }
+    .main{
+      background-color: aqua;
+      float: left;
+      padding: 20px;
+      width: 40%;
+    }
+    .right{
+      background-color: aquamarine;
+      float: left;
+      padding: 20px;
+      width: 25%;
+    }
+@media screen and (max-width: 500px) {
+  .left,.right,.main{
+    width: 100%;
+  }
+}
+  </style>
+</head>
+<body>
+<h2>Media Queries</h2>
+<p>Resize the browser window.</p>
+<p>Make sure you reach the breakpoint at 800px when resizing this frame.</p>
+<div class="left">left menu</div>
+<div class="main">main content</div>
+<div class="right">right content</div>
+</body>
+</html>
