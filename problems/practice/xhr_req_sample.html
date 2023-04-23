@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>XHR REQUEST SAMPLE</title>
+    <style>
+        ul{
+            box-sizing: border-box;
+            background-color: black;
+            color: white;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>XHR REQUEST SAMPLE</h1>
+<h2>retrive data</h2>
+<div id="dom"></div>
+
+<script type="text/javascript">
+    const X = new XMLHttpRequest()
+    X.open('get','http://localhost:3000/user/list',true)         // if authorization is not there it is working
+    // X.open('get','https://reqres.in/api/users',true)
+
+    X.onreadystatechange = function () {
+        if(X.readyState === 4){
+            if(X.status === 200){
+                let user = JSON.parse(this.responseText)
+
+                let result = ''
+                for(let i in user){
+                    result += '<ul>'+
+                        '<li>id : '+ user[i].id +'</li>'+
+                        '<li>First name : '+user[i].firstname+'</li>'+
+                        '<li>Last name : '+user[i].lastname+'</li>'+
+                        '<li>email : '+user[i].email+'</li>'+
+                        '<li>address1 : '+user[i].address1+'</li>'+
+                        '<li>address2 : '+user[i].address2+'</li>'+
+                        '<li>city : '+user[i].city+'</li>'+
+                        '<li>state : '+user[i].state+'</li>'+
+                        '<li>zipcode : '+user[i].zipcode+'</li>'+
+                        '<li>balance : '+user[i].balance+'</li>'+
+                        '<li>createdate : '+user[i].createddate+'</li>'+
+                        '<li>updatedate : '+user[i].updateddate+'</li>'+
+                        //'<li>password : '+user[i].password+'</li>'+
+                        '</ul>'
+                }
+                document.getElementById('dom').innerHTML = result;
+            }
+            if(X.status === 404){
+                console.log("page not found")
+            }
+        }
+    }
+    X.send()
+</script>
+</body>
+</html>
+

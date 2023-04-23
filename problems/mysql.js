@@ -13,7 +13,7 @@ const mysql = require('mysql2/promise');
 async function main(){
     const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'bank', password:'Naveena9@'});
 // query database
-    const [rows, fields] = await connection.execute('SELECT * FROM `users`');
+    const [rows, fields] = await connection.query('SELECT * FROM `users`');
     console.log(rows,fields)
 
 }

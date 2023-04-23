@@ -1,11 +1,13 @@
 const {Router} = require('express')
 const userOperations = require("../services/user");
 const MissingDataError = require("../errors/MissingDataError");
+const {login} = require("../services/user");
 
 const privateRouter = Router()
 const publicRouter = Router()
 
 //---------ADD USER
+//if API call path: is '/user/' , method:'post' then the below code executes, if not matched then follows the next sequential PublicRoute API
 publicRouter.post('/',async function(req,res,next){
     try{
         const body = req.body
@@ -24,18 +26,34 @@ publicRouter.post('/',async function(req,res,next){
         const user = await userOperations.addUser(body)
         res.status(200).json(user)
     }catch (e) {
-        next(e)
+        next(e)             // if error catched next(e)--> follows to main origin i.e middle ware ->app.use('/', routes) in index.js file and executes the next middleWare app.use((error, req, res, next) in index.js file
     }
 })
 
+//--------LOGIN
+//if API call path: is '/user/login' , method:'post' then the below code executes, if not matched then go back to origin point 'userPublicRoute' in routes/index.js
+publicRouter.post('/login', async (req, res, next) => {
+    try{
+        const email = req.body.email
+        const password = req.body.password
+        await login(email, password);
+        res.json({ message: 'Login successful' })
+    }catch (e) {
+        console.log(e.toString())
+        next(e)                         // if error catched next(e)--> follows to main origin i.e middle ware ->app.use('/', routes) in index.js file and executes the next middleWare app.use((error, req, res, next) in index.js file
+    }
+})
+
+
 //---------GET USERS
+//if API call path: is '/user/list' , method:'get' then the below code executes, if not matched then follows the next sequential PrivateRoute API
 privateRouter.get('/list',  async function (req,res,next){
     try{
         const users = await userOperations.getUsers()
         res.json(users)
     }catch (e) {
         console.log(e.toString())
-        next(e)
+        next(e)                         // if error catched next(e)--> follows to main origin i.e middle ware ->app.use('/', routes) in index.js file and executes the next middleWare app.use((error, req, res, next) in index.js file
     }
 })
 
@@ -67,6 +85,7 @@ privateRouter.get('/list',  async function (req,res,next){
 */
 
 //---------GET USER
+//if API call path: is '/user/' , method:'get' then the below code executes, if not matched then follows the next sequential PrivateRoute API
 privateRouter.get('/' ,async function(req,res,next){
     try {
         const id = req.id
@@ -74,17 +93,19 @@ privateRouter.get('/' ,async function(req,res,next){
         res.send(user)
     } catch (e) {
         console.error(e.toString())
-        next(e)                                               // takes the error to the app.use(error) function  how???????/
+        next(e)                       // if error catched next(e)--> follows to main origin i.e middle ware ->app.use('/', routes) in index.js file and executes the next middleWare app.use((error, req, res, next) in index.js file
     }
 })
 
 //-------UPDATE USER
+//if API call path: is '/user/' , method:'put' then the below code executes, if not matched then follows the next sequential PrivateRoute API
 privateRouter.put('/',async function(req,res,next){
     try{
         const id = req.id
         const body = req.body
         let user = await userOperations.getUser(id)
         const givenFields = Object.keys(body)
+        console.log(givenFields)
         const requiredFields = ['firstname', 'lastname', 'email', 'address1', 'address2', 'city', 'state', 'zipcode','password']
         for (let i=0; i< givenFields.length; i++){
             let field = givenFields[i]
@@ -98,11 +119,12 @@ privateRouter.put('/',async function(req,res,next){
         res.send(result)
     }catch (e) {
         console.log(e.toString())
-        next(e)
+        next(e)                     // if error catched next(e)--> follows to main origin i.e middle ware ->app.use('/', routes) in index.js file and executes the next middleWare app.use((error, req, res, next) in index.js file
     }
 })
 
 //-----------SEARCH USER
+//if API call path: is '/name/:name' , method:'get' then the below code executes, if not matched then go back to origin point 'userPrivateRoute' in routes/index.js
 privateRouter.get('/name/:name',async function (req,res,next){
     try{
         const name = req.params.name.trim()
@@ -110,7 +132,7 @@ privateRouter.get('/name/:name',async function (req,res,next){
             res.json(users)
     }catch (e) {
         console.log(e.toString())
-        next(e)
+        next(e)                     // if error catched next(e)--> follows to main origin i.e middle ware ->app.use('/', routes) in index.js file and executes the next middleWare app.use((error, req, res, next) in index.js file
     }
 })
 

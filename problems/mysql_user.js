@@ -5,7 +5,7 @@ async function adduser(user){
     const connection = await connectionOps.CreateConnection()
     const query =  "INSERT INTO `bank`.`users` (`id`, `firstname`, `lastname`, `email`, `address1`, `address2`, `city`, `state`, `zipcode`, `balance`,`createddate`,`updateddate`)" +
         "VALUES ('"+user.id+"', '"+user.firstname+"', '"+user.lastname+"', '"+user.email+"', '"+user.address1+"','"+user.address2+"', '"+user.city+"', '"+user.state+"', '"+user.zipcode+"', '"+user.balance+"','"+user.createddate+"','"+user.updateddate+"');"
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
     console.log(rows)
 }
 

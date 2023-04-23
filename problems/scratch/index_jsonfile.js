@@ -1,6 +1,6 @@
 
-const userOperations = require('../services/user.js')
-const transactionOperations = require('../services/transaction.js')
+const userOperations = require('../../mysql/services/user.js')
+const transactionOperations = require('../../mysql/services/transaction.js')
 
 //--------------------------------USER OPERATIONS----------------------
 //-----ADD USER--------

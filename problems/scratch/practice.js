@@ -1,4 +1,4 @@
-const transactionOperations = require("../services/transaction");
+const transactionOperations = require("../../mysql/services/transaction");
 const moment = require("moment");
 const e = require("express");
 const {promises} = require("fs");
@@ -138,7 +138,7 @@ const emailvalid = (e) => {
     }
     console.log('valid email')
 }
-emailvalid(' naveena@gmail. com ')
+//emailvalid(' naveena@gmail. com ')
 
 
 // Gmail check using includes() operation
@@ -151,3 +151,26 @@ const email = (e) =>{
         console.log('valid email')
 }
 email('naveena@gmail.com')
+
+// if(pen.length == 0){
+//     console.log('no elements')
+//     console.log(pen.length)
+// }
+// else{
+//     console.log('elements')
+//     console.log(pen.length)
+// }
+
+ const countval = (count) =>{
+    count = count+10
+     console.log(count)
+return count
+}
+countval(10)
+
+function count(count){
+    count = count+10
+    console.log(count)
+    return count
+}
+count(100)

@@ -1,19 +1,32 @@
 const mysql = require('mysql2/promise');
 const InternalError = require('../errors/InternalError')
 const config = require('../config')
+const logger = require('../utils/logger')
 
+let pool = null;
 async function CreateConnection() {
     try {
-        const connection = await mysql.createConnection({
-            host: config.DB_HOST_NAME,
-            user: config.DB_HOST_USERNAME,
-            database: config.DB_NAME,
-            password: config.DB_PASSWORD
-        });
-        return connection
+        // return mysql.createConnection({
+        //     host: config.DB_HOST_NAME,
+        //     user: config.DB_HOST_USERNAME,
+        //     database: config.DB_NAME,
+        //     password: config.DB_PASSWORD
+        // });
+
+        if (!pool) {
+            pool = mysql.createPool({
+                host: config.DB_HOST_NAME,
+                user: config.DB_HOST_USERNAME,
+                database: config.DB_NAME,
+                password: config.DB_PASSWORD,
+                waitForConnections: true,
+                connectionLimit: 10,
+            });
+        }
+        return pool
     } catch (e) {
-        throw new InternalError("Db failed")
         console.log(e)
+        throw new InternalError("Db failed")
     }
 }
 
@@ -26,25 +39,14 @@ async function isDBActive() {
         return false
     }
 }
+
+
+async function performQuery(connection, query) {
+    logger.info(query);
+    return connection.query(query);
+}
 module.exports = {
     CreateConnection,
-    isDBActive
+    isDBActive,
+    performQuery
 }
-
-//
-// const mysql = require('mysql2');
-//
-// const pool = mysql.createPool({
-//     host: 'localhost',
-//     user: 'root',
-//     database: 'test',
-//     waitForConnections: true,
-//     connectionLimit: 10,
-//     maxIdle: 10,
-//     idleTimeout: 60000,
-//     queueLimit: 0
-// });
-//
-// module.exports = {
-//     pool
-// }
