@@ -4,8 +4,7 @@
   "description": "This is a nodejs app that performs simple banking operations using text files as DB",
   "main": "index.js",
   "scripts": {
-    "start:mysql": "nodemon --inspect ./mysql/index.js",
-    "start:txtdb": "nodemon --inspect ./fileDb/index.js",
+    "start": "nodemon --inspect src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,6 +21,7 @@
     "atob": "^2.1.2",
     "body-parser": "^1.20.1",
     "btoa": "^1.2.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
