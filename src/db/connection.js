@@ -6,13 +6,6 @@ const logger = require('../utils/logger')
 let pool = null;
 async function CreateConnection() {
     try {
-        // return mysql.createConnection({
-        //     host: config.DB_HOST_NAME,
-        //     user: config.DB_HOST_USERNAME,
-        //     database: config.DB_NAME,
-        //     password: config.DB_PASSWORD
-        // });
-
         if (!pool) {
             pool = mysql.createPool({
                 host: config.DB_HOST_NAME,

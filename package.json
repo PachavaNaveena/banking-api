@@ -4,8 +4,7 @@
   "description": "This is a nodejs app that performs simple banking operations using text files as DB",
   "main": "index.js",
   "scripts": {
-    "start:mysql": "nodemon --inspect ./mysql/index.js",
-    "start:txtdb": "nodemon --inspect ./fileDb/index.js",
+    "start": "nodemon --inspect src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
