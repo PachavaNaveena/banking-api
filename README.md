@@ -1,8 +1,7 @@
 # Banking
 
-This is a nodejs app that performs simple banking operations using data from database. The Banking node app library allows you to create, read, update users and does payments with the Banked API. All of the methods return a promise (sourced from the axios client).
+This is a nodejs app that performs simple banking operations using MySql as database. The Banking node app library allows you to create, read, update users and does payments with the Banked API. All of the methods return a promise (sourced from the axios client).
 #### Dependencies
-- Using **axios** to make http calls to SimpleRETS api
 - **dotenv** to read environment variables from **.env** file
 - **winston** for logging
 
