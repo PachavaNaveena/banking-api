@@ -2,6 +2,7 @@ const {Router} = require('express')
 const userOperations = require("../services/user");
 const MissingDataError = require("../errors/MissingDataError");
 const {login} = require("../services/user");
+const bota = require("btoa")
 
 const privateRouter = Router()
 const publicRouter = Router()
@@ -37,7 +38,7 @@ publicRouter.post('/login', async (req, res, next) => {
         const email = req.body.email
         const password = req.body.password
         await login(email, password);
-        res.json({ message: 'Login successful' })
+        res.json({ message: 'Login successful', token: bota(`${email}:${password}`) })
     }catch (e) {
         console.log(e.toString())
         next(e)                         // if error catched next(e)--> follows to main origin i.e middle ware ->app.use('/', routes) in index.js file and executes the next middleWare app.use((error, req, res, next) in index.js file
